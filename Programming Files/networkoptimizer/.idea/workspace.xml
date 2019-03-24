@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7346a383-ef95-49eb-bd73-b7afad4907aa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/optimizer/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/optimizer/templates/theme.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/optimizer/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optimizer/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/templates/index.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,13 +39,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="229" />
+          <entry key="html" value="402" />
           <entry key="py" value="89" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="229" />
+          <entry key="HTML" value="402" />
           <entry key="Python" value="89" />
         </counts>
       </usages-collector>
@@ -67,8 +65,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="41" column="33" selection-start-line="41" selection-start-column="33" selection-end-line="41" selection-end-column="33" />
+            <state relative-caret-position="554">
+              <caret line="103" column="70" selection-start-line="103" selection-start-column="70" selection-end-line="103" selection-end-column="70" />
             </state>
           </provider>
         </entry>
@@ -366,8 +364,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="41" column="33" selection-start-line="41" selection-start-column="33" selection-end-line="41" selection-end-column="33" />
+        <state relative-caret-position="554">
+          <caret line="103" column="70" selection-start-line="103" selection-start-column="70" selection-end-line="103" selection-end-column="70" />
         </state>
       </provider>
     </entry>
