@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="theme.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
@@ -15,99 +16,164 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
             integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
             crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.modal').modal('show');
+        });
+    </script>
 </head>
 <body>
 
 <nav class="navbar navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Provider Network Optimizer</a>
+    <a class="navbar-brand" href="#">Provider Network Optimizer</a>
 </nav>
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col">
-                <form>
-                    <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label">Parameter</label>
-                        <div class="col-sm-9">
-                            <input type="password" class="form-control" id="inputPassword" placeholder="Parameter">
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <form>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Capacity ></label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputPassword">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Quality   ></label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="inputPassword">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Optimize</button>
+            </form>
+            <form class="mt-1">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProviderModal">
+                    Add Provider
+                </button>
+                <!-- Add Provider Modal -->
+                <div class="modal fade" id="addProviderModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add with Provider ID</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- device registration form -->
+                            <form id="add_device_form" method="post">
+                                <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label">Parameter</label>
-                        <div class="col-sm-9">
-                            <input type="password" class="form-control" id="inputPassword" placeholder="Parameter">
+                </div>
+            </form>
+            <form class="mt-1">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#DeleteProviderModal">
+                    Delete Provider
+                </button>
+
+                <!-- Add Provider Modal -->
+                <div class="modal fade" id="DeleteProviderModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete with Provider ID</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- device registration form -->
+                            <form id="add_device_form" method="post">
+                                <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Optimize</button>
-                </form>
-                <form class="mt-1">
-                    <button type="submit" class="btn btn-primary">Add Provider</button>
-                </form>
-                <form class="mt-1">
-                    <button type="submit" class="btn btn-primary">Delete Provider</button>
-                </form>
-            </div>
-            <div class="col col-lg-7">
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Provider ID</th>
-                        <th scope="col">Provider Name</th>
-                        <th scope="col">Cost</th>
-                        <th scope="col">Quality</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Health Matter</td>
-                        <td>1000</td>
-                        <td>3.5</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob Health</td>
-                        <td>200</td>
-                        <td>2.0</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry Health</td>
-                        <td>4000</td>
-                        <td>4.9</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td>Matter</td>
-                        <td>1000</td>
-                        <td>3.5</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td>M Health</td>
-                        <td>200</td>
-                        <td>2.0</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">6</th>
-                        <td>Future Health</td>
-                        <td>4000</td>
-                        <td>4.9</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <ul class="list-group">
-
-
-  <li class="list-group-item list-group-item-primary">Overall Quality: 4.3</li>
-  <li class="list-group-item list-group-item-info">Overall Cost: 13000</li>
-</ul>
-            </div>
+                </div>
+            </form>
+        </div>
+        <div class="col col-lg-7">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Provider ID</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Quality</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Health Matter</td>
+                    <td>1000</td>
+                    <td>3.5</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob Health</td>
+                    <td>200</td>
+                    <td>2.0</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Larry Health</td>
+                    <td>4000</td>
+                    <td>4.9</td>
+                </tr>
+                <tr>
+                    <th scope="row">4</th>
+                    <td>Matter</td>
+                    <td>1000</td>
+                    <td>3.5</td>
+                </tr>
+                <tr>
+                    <th scope="row">5</th>
+                    <td>M Health</td>
+                    <td>200</td>
+                    <td>2.0</td>
+                </tr>
+                <tr>
+                    <th scope="row">6</th>
+                    <td>Future Health</td>
+                    <td>4000</td>
+                    <td>4.9</td>
+                </tr>
+                </tbody>
+            </table>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Overall Quality: 4.3</li>
+                <li class="list-group-item list-group-item-info">Overall Cost: 13000</li>
+            </ul>
         </div>
     </div>
-
+</div>
 
 
 </body>
 </html>
+
