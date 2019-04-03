@@ -29,6 +29,10 @@
 </nav>
 
 <div class="container mt-5">
+
+    {% for j in df.itertuples %}
+        {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{j.c }} <br>
+    {% endfor %}
     <div class="row">
         <div class="col">
             <form>
