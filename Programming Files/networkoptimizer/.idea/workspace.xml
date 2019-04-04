@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7346a383-ef95-49eb-bd73-b7afad4907aa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../Capstone Pre-processing v1-Copy1.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../Capstone Pre-processing v1-Copy1.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/networkoptimizer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/networkoptimizer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/optimizer/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimizer/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/optimizer/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -71,14 +67,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="127" />
-          <entry key="py" value="808" />
+          <entry key="html" value="421" />
+          <entry key="py" value="2821" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="127" />
-          <entry key="Python" value="808" />
+          <entry key="HTML" value="421" />
+          <entry key="Python" value="2821" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -104,23 +100,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="33" column="55" selection-start-line="33" selection-start-column="55" selection-end-line="33" selection-end-column="55" />
+            <state relative-caret-position="286">
+              <caret line="35" column="15" selection-start-line="35" selection-start-column="15" selection-end-line="35" selection-end-column="15" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/optimizer/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="208" column="4" selection-start-line="208" selection-start-column="4" selection-end-line="208" selection-end-column="4" />
+            <state relative-caret-position="-414">
+              <caret line="237" column="26" selection-start-line="237" selection-start-column="26" selection-end-line="237" selection-end-column="26" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
-                <marker date="1554315694038" expanded="true" signature="3752:8958" ph="..." />
+                <marker date="1554345483246" expanded="true" signature="8412:11476" ph="..." />
               </folding>
             </state>
           </provider>
@@ -169,6 +165,9 @@
       <find>enrollment_by_county</find>
       <find>S</find>
       <find>merge</find>
+      <find>Total SNF Medicare Payment Amount</find>
+      <find>feature_df</find>
+      <find>second_avg_score</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -181,10 +180,10 @@
         <option value="$PROJECT_DIR$/optimizer/templates/style.css" />
         <option value="$PROJECT_DIR$/optimizer/templates/theme.css" />
         <option value="$PROJECT_DIR$/optimizer/models.py" />
-        <option value="$PROJECT_DIR$/optimizer/templates/index.html" />
         <option value="$PROJECT_DIR$/optimizer/urls.py" />
         <option value="$PROJECT_DIR$/networkoptimizer/urls.py" />
         <option value="$PROJECT_DIR$/optimizer/views.py" />
+        <option value="$PROJECT_DIR$/optimizer/templates/index.html" />
       </list>
     </option>
   </component>
@@ -198,7 +197,7 @@
     <option name="x" value="95" />
     <option name="y" value="50" />
     <option name="width" value="2130" />
-    <option name="height" value="1299" />
+    <option name="height" value="1300" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -331,13 +330,13 @@
     <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23986487" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.05743243" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49932432" visible="true" weight="0.15972222" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49932432" visible="true" weight="0.38333333" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.35277778" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -345,7 +344,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5006757" side_tool="true" weight="0.32916668" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.4861111" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.26527777" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32918552" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -388,11 +387,30 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/optimizer/views.py</url>
-          <line>170</line>
-          <option name="timeStamp" value="1" />
+          <line>208</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Python.DjangoServer">
+        <watch expression="request.GET['apple']" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>request.GET['apple']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>request['apple']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/django/core/management/base.py" />
@@ -407,13 +425,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="7" column="45" selection-start-line="7" selection-start-column="45" selection-end-line="7" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="33" column="55" selection-start-line="33" selection-start-column="55" selection-end-line="33" selection-end-column="55" />
         </state>
       </provider>
     </entry>
@@ -445,12 +456,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/optimizer/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="208" column="4" selection-start-line="208" selection-start-column="4" selection-end-line="208" selection-end-column="4" />
+        <state relative-caret-position="-414">
+          <caret line="237" column="26" selection-start-line="237" selection-start-column="26" selection-end-line="237" selection-end-column="26" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
-            <marker date="1554315694038" expanded="true" signature="3752:8958" ph="..." />
+            <marker date="1554345483246" expanded="true" signature="8412:11476" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="35" column="15" selection-start-line="35" selection-start-column="15" selection-end-line="35" selection-end-column="15" />
         </state>
       </provider>
     </entry>
