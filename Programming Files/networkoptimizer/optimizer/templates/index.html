@@ -35,44 +35,129 @@
     {% if not second_result %}
         Second optimizaion failed. The network can't satisfy all constraints.
     {% endif %}
+    {#    <div class="row">#}
+    {#        <div class="col">#}
+    {#            {% for j in first_df.itertuples %}#}
+    {#                {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{ j.BEDCERT }}, {{ j.OVERALL_RATING }}, {{ j.COST }} <br>#}
+    {#            {% endfor %}#}
+    {#            cost:{{ first_cost }}#}
+    {#            quality:{{ first_avg_score }}#}
+    {#        </div>#}
+    {#        <div class="col">#}
+    {#            {% for j in second_df.itertuples %}#}
+    {#                {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{ j.BEDCERT }}, {{ j.OVERALL_RATING }}, {{ j.COST }} <br>#}
+    {#            {% endfor %}#}
+    {#            cost:{{ second_cost }}#}
+    {#            quality:{{ second_avg_score }}#}
+    {#        </div>#}
+    {#    </div>#}
+
+
     <div class="row">
         <div class="col">
-            {% for j in first_df.itertuples %}
-                {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{ j.BEDCERT }}, {{ j.OVERALL_RATING }}, {{ j.COST }} <br>
-            {% endfor %}
-            cost:{{ first_cost }}
-            quality:{{ first_avg_score }}
-        </div>
-        <div class="col">
-
-                {% for j in second_df.itertuples %}
-                    {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{ j.BEDCERT }}, {{ j.OVERALL_RATING }}, {{ j.COST }} <br>
-                {% endfor %}
-                cost:{{ second_cost }}
-                quality:{{ second_avg_score }}
-
+            <form id="optimize_form" action="{% url 'optimize' %}" method="get">
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Capacity Multiplier</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="cm">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Utilization Index</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="ui">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Turnover Number</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="turnover">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Minimum Rating</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="min_rating">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">County</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="county">
+                    </div>
+                </div>
+                <input type="hidden" class="form-control" name="to_add" value="">
+                <input type="hidden" class="form-control" name="to_delete" value="">
+                <button type="submit" class="btn btn-primary">Optimize</button>
+            </form>
         </div>
     </div>
 
-
     <div class="row">
+        <div class="col col-lg-6">
+            <p class="h2">First Optimization</p>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Provider ID</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Certificated Beds</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Quality</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for j in first_df.itertuples %}
+                    <tr>
+                        <th>{{ j.PROVNUM }}</th>
+                        <th>{{ j.PROVNAME }}</th>
+                        <th>{{ j.BEDCERT }}</th>
+                        <th>{{ j.COST }}</th>
+                        <th>{{ j.OVERALL_RATING }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Overall Cost: {{ first_cost }}</li>
+                <li class="list-group-item list-group-item-info">Overall Score: {{ first_avg_score }}</li>
+            </ul>
+        </div>
+
+        <div class="col col-lg-6">
+            <p class="h2">Second Optimization</p>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Provider ID</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Certificated Beds</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Quality</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for j in second_df.itertuples %}
+                    <tr>
+                        <th>{{ j.PROVNUM }}</th>
+                        <th>{{ j.PROVNAME }}</th>
+                        <th>{{ j.BEDCERT }}</th>
+                        <th>{{ j.COST }}</th>
+                        <th>{{ j.OVERALL_RATING }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Overall Cost: {{ second_cost }}</li>
+                <li class="list-group-item list-group-item-info">Overall Score: {{ second_avg_score }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-3">
         <div class="col">
-            <form>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Capacity ></label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" id="inputPassword">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Quality ></label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" id="inputPassword">
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Optimize</button>
-            </form>
-            <form class="mt-1">
+            <div class="mr-4">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProviderModal">
                     Add Provider
                 </button>
@@ -88,14 +173,20 @@
                                 </button>
                             </div>
                             <!-- device registration form -->
-                            <form id="add_device_form" method="post">
+                            <form id="optimize_form" action="{% url 'optimize' %}" method="get">
                                 <div class="modal-body">
                                     <div class="form-group row">
                                         <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control">
+                                            <input type="text" class="form-control" name="to_add">
                                         </div>
                                     </div>
+                                    <input type="hidden" class="form-control" name="county" value={{ county }}>
+                                    <input type="hidden" class="form-control" name="cm" value={{ cm }}>
+                                    <input type="hidden" class="form-control" name="ui" value={{ ui }}>
+                                    <input type="hidden" class="form-control" name="turnover" value={{ turnover }}>
+                                    <input type="hidden" class="form-control" name="min_rating" value={{ min_rating }}>
+                                    <input type="hidden" class="form-control" name="to_delete" value={{ to_delete }}>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -105,12 +196,12 @@
                         </div>
                     </div>
                 </div>
-            </form>
-            <form class="mt-1">
+            </div>
+
+            <div class="mt-2">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#DeleteProviderModal">
                     Delete Provider
                 </button>
-
                 <!-- Add Provider Modal -->
                 <div class="modal fade" id="DeleteProviderModal" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -123,14 +214,20 @@
                                 </button>
                             </div>
                             <!-- device registration form -->
-                            <form id="add_device_form" method="post">
+                            <form id="optimize_form" action="{% url 'optimize' %}" method="get">
                                 <div class="modal-body">
                                     <div class="form-group row">
                                         <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control">
+                                            <input type="text" class="form-control" name="to_delete">
                                         </div>
                                     </div>
+                                    <input type="hidden" class="form-control" name="county" value={{ county }}>
+                                    <input type="hidden" class="form-control" name="cm" value={{ cm }}>
+                                    <input type="hidden" class="form-control" name="ui" value={{ ui }}>
+                                    <input type="hidden" class="form-control" name="turnover" value={{ turnover }}>
+                                    <input type="hidden" class="form-control" name="min_rating" value={{ min_rating }}>
+                                    <input type="hidden" class="form-control" name="to_add" value={{ to_add }}>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -140,61 +237,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="col col-lg-7">
-            <table class="table">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Provider ID</th>
-                    <th scope="col">Provider Name</th>
-                    <th scope="col">Cost</th>
-                    <th scope="col">Quality</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Health Matter</td>
-                    <td>1000</td>
-                    <td>3.5</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob Health</td>
-                    <td>200</td>
-                    <td>2.0</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry Health</td>
-                    <td>4000</td>
-                    <td>4.9</td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>Matter</td>
-                    <td>1000</td>
-                    <td>3.5</td>
-                </tr>
-                <tr>
-                    <th scope="row">5</th>
-                    <td>M Health</td>
-                    <td>200</td>
-                    <td>2.0</td>
-                </tr>
-                <tr>
-                    <th scope="row">6</th>
-                    <td>Future Health</td>
-                    <td>4000</td>
-                    <td>4.9</td>
-                </tr>
-                </tbody>
-            </table>
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-primary">Overall Quality: 4.3</li>
-                <li class="list-group-item list-group-item-info">Overall Cost: 13000</li>
-            </ul>
+            </div>
         </div>
     </div>
 </div>
