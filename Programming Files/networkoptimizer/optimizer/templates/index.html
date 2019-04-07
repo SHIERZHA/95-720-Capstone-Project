@@ -29,6 +29,32 @@
 </nav>
 
 <div class="container mt-5">
+    {% if not first_result %}
+        First optimizaion failed. The network can't satisfy all constraints.
+    {% endif %}
+    {% if not second_result %}
+        Second optimizaion failed. The network can't satisfy all constraints.
+    {% endif %}
+    <div class="row">
+        <div class="col">
+            {% for j in first_df.itertuples %}
+                {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{ j.BEDCERT }}, {{ j.OVERALL_RATING }}, {{ j.COST }} <br>
+            {% endfor %}
+            cost:{{ first_cost }}
+            quality:{{ first_avg_score }}
+        </div>
+        <div class="col">
+
+                {% for j in second_df.itertuples %}
+                    {{ j.PROVNUM }}, {{ j.PROVNAME }}, {{ j.BEDCERT }}, {{ j.OVERALL_RATING }}, {{ j.COST }} <br>
+                {% endfor %}
+                cost:{{ second_cost }}
+                quality:{{ second_avg_score }}
+
+        </div>
+    </div>
+
+
     <div class="row">
         <div class="col">
             <form>
@@ -39,7 +65,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Quality   ></label>
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Quality ></label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="inputPassword">
                     </div>
