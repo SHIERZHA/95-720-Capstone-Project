@@ -91,6 +91,8 @@ def optimize(request):
     min_rating = int(request.GET['min_rating'])
     to_delete = request.GET['to_delete']
     to_add = request.GET['to_add']
+    to_delete_orig = to_delete
+    to_add_orig = to_add
     to_delete = to_delete.replace(' ', '').split(';')
     to_add = to_add.replace(' ', '').split(';')
     county = 'Allegheny'
@@ -163,7 +165,7 @@ def optimize(request):
                                              (distance_info['destination_id'] == destination_id)) |
                                             ((distance_info['origin_id'] == destination_id) &
                                              (distance_info['destination_id'] == original_id))]
-                #         print(distance_df)
+                # print(distance_df)
                 if distance_df.iloc[0, 10] > 20:
                     distance_arr.append(0.0)
                 else:
@@ -206,7 +208,6 @@ def optimize(request):
         A.append(tmp)
 
     #  Build the upper bound (right side) of the inequality
-
     B = []
     # Bed number upper bound
     B.append((enrollment * cm * ui * turnover / 365))
@@ -268,7 +269,10 @@ def optimize(request):
     print("second result", second_result)
     return render(request, 'index.html',
                   context={"first_df": first_df, "second_df": second_df, "first_avg_score": first_avg_score,
-                           "second_avg_score": second_avg_score, "first_cost": first_cost, "second_cost": second_cost, "first_result": first_result, "second_result": second_result})
+                           "second_avg_score": second_avg_score, "first_cost": first_cost, "second_cost": second_cost,
+                           "first_result": first_result, "second_result": second_result, 'county' : county, 'cm': cm,
+                           'ui': ui, 'turnover': turnover, 'min_rating': min_rating, 'to_add': to_add_orig,
+                           'to_delete': to_delete_orig})
 
 
 def reform_df(df, county_data, to_delete, to_add):
