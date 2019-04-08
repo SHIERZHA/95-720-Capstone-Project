@@ -13,6 +13,7 @@ enrolment_info = None
 provider_data = None
 contract_info_col_need = None
 contract_info_col_needed = None
+enrolment_info_col_needed = None
 feature_df = None
 county_provider_data = None
 first_result = True
@@ -74,6 +75,7 @@ def home(request):
     enrolment_info_col_needed = enrolment_info_col_needed[(enrolment_info_col_needed['State'].str.lower() == 'pa')]
     # Join provider info and snf_puf tables
     # Convert joining column types to strings
+    print(enrolment_info_col_needed)
     provider_info_col_needed['PROVNUM'] = provider_info_col_needed['PROVNUM'].astype(str)
     snf_puf_col_needed['Provider ID'] = snf_puf_col_needed['Provider ID'].astype(str)
     # joining tables
@@ -81,6 +83,11 @@ def home(request):
                              left_on='PROVNUM', right_on='Provider ID')
 
     return render(request, 'index.html', context={"first_result": first_result, "second_result": second_result})
+
+def reset(request):
+    global default_df
+    default_df = None
+    return home(request)
 
 
 def optimize(request):
@@ -95,7 +102,7 @@ def optimize(request):
     to_add_orig = to_add
     to_delete = to_delete.replace(' ', '').split(';')
     to_add = to_add.replace(' ', '').split(';')
-    county = 'Allegheny'
+    # county = 'Allegheny'
     global contract_info_col_needed
     global enrolment_info_col_needed
     global feature_df
@@ -130,7 +137,6 @@ def optimize(request):
         enrollment_by_county = pd.DataFrame(enrollment_by_county)
         enrollment_by_county = enrollment_by_county.rename(columns={'Enrollment': 'ENROLLMENT'}).reset_index()[
             ['STATE', 'COUNTY_NAME', 'ENROLLMENT']]
-        print(enrollment_by_county)
         enrollment = enrollment_by_county['ENROLLMENT'][0]
 
         # data = pd.merge(provider_data, enrolment_data, on=['STATE', 'COUNTY_NAME'])
@@ -140,6 +146,7 @@ def optimize(request):
         distance_info = pd.read_csv('optimizer/static/distance/' + filename, encoding='ISO-8859-1')
 
         distance_info['origin_id'] = distance_info['origin_id'].astype('str')
+        distance_info['destination_id'] = distance_info['destination_id'].astype('str')
 
         county_provider_data = provider_data[
             (provider_data['STATE'] == 'PA') & (provider_data['COUNTY_NAME'] == county)]
@@ -160,13 +167,12 @@ def optimize(request):
                     distance_arr.append(0.0)
                     continue
                 destination_id = county_provider_data.iloc[j, 0]
-                # print("destination", destination_id)
                 distance_df = distance_info[((distance_info['origin_id'] == original_id) &
                                              (distance_info['destination_id'] == destination_id)) |
                                             ((distance_info['origin_id'] == destination_id) &
                                              (distance_info['destination_id'] == original_id))]
                 # print(distance_df)
-                if distance_df.iloc[0, 10] > 20:
+                if distance_df.reset_index()['DISTANCE'][0] > 20:
                     distance_arr.append(0.0)
                 else:
                     distance_arr.append(1.0)
@@ -186,7 +192,7 @@ def optimize(request):
         # all_feature_df[list(range(1,60))] = all_feature_df[list(range(1,60))].astype('float')
         feature_df = all_feature_df.iloc[:, index]
 
-        all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
+        # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
 
     model_df, costs = reform_df(feature_df, county_provider_data, to_delete, to_add)
 
@@ -230,8 +236,8 @@ def optimize(request):
     total_cost = np.array(objective_func) * selection
 
     # constraints = np.array([a * selection <= B for a in np.array(A)])
-    B = np.array(B).reshape(119, 1)
-    constraints = [A[i] * selection >= B[i] for i in range(60)]
+    B = np.array(B).reshape(-1, 1)
+    constraints = [A[i] * selection >= B[i] for i in range(len(distance_df) + 1)]
     # constraints = feature_df['BEDCERT'].values.T * selection >= 5000
 
     network_optimization = cvxpy.Problem(cvxpy.Minimize(total_cost), constraints)
