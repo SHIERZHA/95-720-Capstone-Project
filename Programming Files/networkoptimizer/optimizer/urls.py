@@ -4,5 +4,6 @@ from optimizer import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('optimize', views.optimize, name='optimize')
+    path('optimize', views.optimize, name='optimize'),
+    path('reset', views.reset, name='reset')
 ]
