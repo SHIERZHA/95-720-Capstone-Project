@@ -145,7 +145,9 @@ def optimize(request):
     #  Build the upper bound (right side) of the inequality
     B = []
     # Bed number upper bound
-    enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'][0]
+    added_index = county_provider_data[county_provider_data['PROVNUM'].isin(to_add)].index
+    added_provider_beds = county_provider_data['BEDCERT'][added_index].sum()
+    enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'][0] - added_provider_beds
     B.append((enrollment * cm * ui * turnover / 365))
 
     # Neighbor upper bound
@@ -173,7 +175,7 @@ def optimize(request):
     print('enrollment', enrollment)
     print('capacity constraints', enrollment * cm * ui * turnover / 365)
 
-    selected_providers_index = model_df[selection.value == 1].index
+    selected_providers_index = np.concatenate((model_df[selection.value == 1].index, added_index), axis=None)
     selected_providers = county_provider_data.iloc[selected_providers_index, :]
     # cache to global variable
     if first:
