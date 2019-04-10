@@ -5,15 +5,16 @@ import numpy as np
 # Create your views here.
 
 # Cache the processed data
-first_df = None
-second_df = None
+# first_df = None
+# second_df = None
 provider_info = None
-contract_info = None
-enrolment_info = None
-provider_data = None
-contract_info_col_need = None
-contract_info_col_needed = None
-enrolment_info_col_needed = None
+enrollment_info = None
+# contract_info = None
+# enrolment_info = None
+# provider_data = None
+# contract_info_col_need = None
+# contract_info_col_needed = None
+# enrolment_info_col_needed = None
 feature_df = None
 county_provider_data = None
 first_result = True
@@ -21,72 +22,27 @@ second_result = True
 first_cost = 0
 first_avg_score = 0
 second_cost = 0
-enrollment = 0
+
+
+# enrollment = 0
 
 
 def home(request):
-    # read file - takes a few seconds. Patience is appreciated
     global provider_info
-    global contract_info
-    global enrolment_info
-    global provider_data
-    global contract_info_col_needed
-    global enrolment_info_col_needed
+    global enrollment_info
+    global feature_df
     global first_result
     global second_result
-    provider_info = pd.read_excel('optimizer/static/dataset/Marked ProviderInfo_Download_HCS Comments.xlsx')
-    contract_info = pd.read_csv('optimizer/static/dataset/Marked_CPSC_Contract_Info_2018_12.csv', encoding='ISO-8859-1')
-    enrolment_info = pd.read_csv('optimizer/static/dataset/Marked_CPSC_Enrollment_Info_2018_12.csv')
 
-    # assumes first sheet in the excel workbook is contains the data of interest(We can select sheet name now.)
-    # assumes the first row in excel sheet contains the column headers(It is now.)
+    feature_df = None
     # read file - takes a few seconds. Patience is appreciated
-    xls_puf = pd.ExcelFile('optimizer/static/dataset/Marked_SNF PUF - Provider Final 2016_HCS Clear Header.xlsx')
-    snf_puf = pd.read_excel(xls_puf, "Provider")
-
-    # drop un-needed columns from all datasets
-
-    # the columns to be kept in provider_info
-    provider_info_columns = ['PROVNUM', 'PROVNAME', 'BEDCERT', 'RESTOT', 'INHOSP', 'OVERALL_RATING', 'STATE',
-                             'COUNTY_NAME']
-    # keep the columns needed in provider_info
-    provider_info_col_needed = provider_info[provider_info_columns]
-
-    # the columns to be kept in snf_puf file
-    snf_puf_columns = ['Provider ID', 'Total SNF Medicare Payment Amount', 'Average Length of Stay (Days)',
-                       'Average HCC Score']
-    # keep the columns needed in snf_puf
-    snf_puf_col_needed = snf_puf[snf_puf_columns]
-
-    # the columns to be kept in contract info
-    contract_info_columns = ['Contract ID', 'Organization Marketing Name']
-    # keep the columns needed in contract info
-    contract_info_col_needed = contract_info[contract_info_columns]
-    # we are only interested in Highmark
-    contract_info_col_needed = contract_info_col_needed[
-        contract_info_col_needed['Organization Marketing Name'].str.lower()
-        == 'highmark senior health company'].drop_duplicates(subset=['Contract ID', 'Organization Marketing Name'])
-
-    # the columns to be kept in enrolment info
-    enrolment_info_columns = ['Contract Number', 'Plan ID', 'State', 'County', 'Enrollment']
-    # keep the columns needed in enrolment info
-    enrolment_info_col_needed = enrolment_info[enrolment_info_columns]
-    # For the base model, only consider Allegheny
-    enrolment_info_col_needed = enrolment_info_col_needed[(enrolment_info_col_needed['State'].str.lower() == 'pa')]
-    # Join provider info and snf_puf tables
-    # Convert joining column types to strings
-    print(enrolment_info_col_needed)
-    provider_info_col_needed['PROVNUM'] = provider_info_col_needed['PROVNUM'].astype(str)
-    snf_puf_col_needed['Provider ID'] = snf_puf_col_needed['Provider ID'].astype(str)
-    # joining tables
-    provider_data = pd.merge(provider_info_col_needed, snf_puf_col_needed,
-                             left_on='PROVNUM', right_on='Provider ID')
-
+    if provider_info is None:
+        provider_info = pd.read_csv('optimizer/static/dataset/provider_data.csv')
+        enrollment_info = pd.read_csv('optimizer/static/dataset/enrollment_by_county.csv')
     return render(request, 'index.html', context={"first_result": first_result, "second_result": second_result})
 
+
 def reset(request):
-    global default_df
-    default_df = None
     return home(request)
 
 
@@ -102,45 +58,21 @@ def optimize(request):
     to_add_orig = to_add
     to_delete = to_delete.replace(' ', '').split(';')
     to_add = to_add.replace(' ', '').split(';')
-    # county = 'Allegheny'
-    global contract_info_col_needed
-    global enrolment_info_col_needed
+
     global feature_df
-    global enrollment
-    global county_provider_data
     global first_df
-    global second_df
-    global first_cost
-    global second_cost
-    global first_avg_score
+    global provider_info
     global first_result
-    second_result = True
+    global second_result
+    global first_cost
+    global first_avg_score
+    global second_cost
+    global county_provider_data
+    second_df = None
     second_avg_score = 0
     first = False
     if feature_df is None:
         first = True
-        enrolment_info_col_needed = enrolment_info_col_needed[
-            (enrolment_info_col_needed['County'] == county)]
-        # Join contract_info and enrolment_info columns
-        # Convert joining column types to strings
-        contract_info_col_needed['Contract ID'] = contract_info_col_needed['Contract ID'].astype(str)
-        enrolment_info_col_needed['Contract Number'] = enrolment_info_col_needed['Contract Number'].astype(str)
-        # joining tables
-        enrolment_data = pd.merge(contract_info_col_needed, enrolment_info_col_needed, left_on='Contract ID',
-                                  right_on='Contract Number')
-        # rename county and state columns
-        enrolment_data = enrolment_data.rename(columns={'County': 'COUNTY_NAME', 'State': 'STATE'})
-        # Process enrolment data
-        enrolment_data['Enrollment'] = enrolment_data['Enrollment'].replace('*', 0)
-        enrolment_data['Enrollment'] = enrolment_data['Enrollment'].astype('int')
-        enrollment_by_county = enrolment_data.groupby(['STATE', 'COUNTY_NAME'])['Enrollment'].sum()
-        enrollment_by_county = pd.DataFrame(enrollment_by_county)
-        enrollment_by_county = enrollment_by_county.rename(columns={'Enrollment': 'ENROLLMENT'}).reset_index()[
-            ['STATE', 'COUNTY_NAME', 'ENROLLMENT']]
-        enrollment = enrollment_by_county['ENROLLMENT'][0]
-
-        # data = pd.merge(provider_data, enrolment_data, on=['STATE', 'COUNTY_NAME'])
-
         # build the feature matrix
         filename = county + '.csv'
         distance_info = pd.read_csv('optimizer/static/distance/' + filename, encoding='ISO-8859-1')
@@ -148,8 +80,8 @@ def optimize(request):
         distance_info['origin_id'] = distance_info['origin_id'].astype('str')
         distance_info['destination_id'] = distance_info['destination_id'].astype('str')
 
-        county_provider_data = provider_data[
-            (provider_data['STATE'] == 'PA') & (provider_data['COUNTY_NAME'] == county)]
+        county_provider_data = provider_info[
+            (provider_info['STATE'] == 'PA') & (provider_info['COUNTY_NAME'] == county)]
 
         county_provider_data = county_provider_data.reset_index(drop=True)
         county_provider_data = county_provider_data.rename(columns={'Total SNF Medicare Payment Amount': 'COST'})
@@ -159,14 +91,13 @@ def optimize(request):
         distance_matrix = []
         for i in range(len(county_provider_data)):
             distance_arr = []
-            original_id = county_provider_data.iloc[i, 0]
-            distance_arr.append(original_id)
+            original_id = str(county_provider_data.iloc[i, 0])
             # print("original", original_id)
             for j in range(len(county_provider_data)):
                 if i == j:
                     distance_arr.append(0.0)
                     continue
-                destination_id = county_provider_data.iloc[j, 0]
+                destination_id = str(county_provider_data.iloc[j, 0])
                 distance_df = distance_info[((distance_info['origin_id'] == original_id) &
                                              (distance_info['destination_id'] == destination_id)) |
                                             ((distance_info['origin_id'] == destination_id) &
@@ -177,16 +108,18 @@ def optimize(request):
                 else:
                     distance_arr.append(1.0)
             # print(distance_arr)
+            distance_arr.append(original_id)
             distance_matrix.append(distance_arr)
 
         distance_matrix = np.array(distance_matrix)
         # distance_matrix.shape
         distance_df = pd.DataFrame(distance_matrix)
-        distance_df.rename(columns={distance_df.columns[0]: "PROVNUM"}, inplace=True)
+        distance_df.rename(columns={distance_df.columns[len(distance_df)]: "PROVNUM"}, inplace=True)
+        county_provider_data['PROVNUM'] = county_provider_data['PROVNUM'].astype('str')
         all_feature_df = pd.merge(county_provider_data, distance_df, on=['PROVNUM'])
 
-        distance_index = list(range(12, 12 + len(all_feature_df)))
-        index = [2, 5, 9]
+        distance_index = list(range(15, 15 + len(county_provider_data)))
+        index = [2, 5, 9, 12, 13, 14]
         index = index + distance_index
         # print(index)
         # all_feature_df[list(range(1,60))] = all_feature_df[list(range(1,60))].astype('float')
@@ -194,35 +127,27 @@ def optimize(request):
 
         # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
 
-    model_df, costs = reform_df(feature_df, county_provider_data, to_delete, to_add)
-
+    model_df, costs = change_providers(feature_df, county_provider_data, to_delete, to_add)
+    # Overall rating constraint
+    model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
     # Build constraint matrix
     # min_rating = min_rating
     A = []
     # Bed number constraint
     A.append(model_df['BEDCERT'].values.T)
-    # Overall rating constraint
     sample_size = len(model_df)
-    for i in range(sample_size):
-        tmp = np.zeros(sample_size)
-        tmp[i] = -min_rating
-        A.append(tmp)
     # Neighbor constraint
     for i in range(sample_size):
-        tmp = model_df.iloc[i, 3:].values.astype('float64')
+        tmp = model_df.iloc[i, 6:].values.astype('float64')
         tmp[i] = -1
         A.append(tmp)
 
     #  Build the upper bound (right side) of the inequality
     B = []
     # Bed number upper bound
+    enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'][0]
     B.append((enrollment * cm * ui * turnover / 365))
 
-    # Overall rating upper bound
-    sample_size = len(model_df)
-    for i in range(sample_size):
-        tmp = -model_df['OVERALL_RATING'][i]
-        B.append(tmp)
     # Neighbor upper bound
     for i in range(sample_size):
         B.append(0)
@@ -237,7 +162,7 @@ def optimize(request):
 
     # constraints = np.array([a * selection <= B for a in np.array(A)])
     B = np.array(B).reshape(-1, 1)
-    constraints = [A[i] * selection >= B[i] for i in range(len(distance_df) + 1)]
+    constraints = [A[i] * selection >= B[i] for i in range(len(model_df) + 1)]
     # constraints = feature_df['BEDCERT'].values.T * selection >= 5000
 
     network_optimization = cvxpy.Problem(cvxpy.Minimize(total_cost), constraints)
@@ -248,8 +173,8 @@ def optimize(request):
     print('enrollment', enrollment)
     print('capacity constraints', enrollment * cm * ui * turnover / 365)
 
-    selected_providers = county_provider_data[(selection.value == 1) | county_provider_data['PROVNUM'].isin(to_add)]
-
+    selected_providers_index = model_df[selection.value == 1].index
+    selected_providers = county_provider_data.iloc[selected_providers_index, :]
     # cache to global variable
     if first:
         first_df = selected_providers
@@ -276,27 +201,34 @@ def optimize(request):
     return render(request, 'index.html',
                   context={"first_df": first_df, "second_df": second_df, "first_avg_score": first_avg_score,
                            "second_avg_score": second_avg_score, "first_cost": first_cost, "second_cost": second_cost,
-                           "first_result": first_result, "second_result": second_result, 'county' : county, 'cm': cm,
+                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm,
                            'ui': ui, 'turnover': turnover, 'min_rating': min_rating, 'to_add': to_add_orig,
                            'to_delete': to_delete_orig})
 
 
-def reform_df(df, county_data, to_delete, to_add):
+def change_providers(df, county_data, to_delete, to_add):
     costs = 0
     final_df = df.copy()
     #     Deal with to_delete first
     if to_delete:
         deleted_index = county_data[county_data['PROVNUM'].isin(to_delete)].index
-        for i in deleted_index:
-            final_df.loc[i, 'OVERALL_RATING'] = 0
+        final_df = df.drop(deleted_index, axis=1).drop(deleted_index, axis=0)
 
     if to_add:
         added_index = county_data[county_data['PROVNUM'].isin(to_add)].index
-        for i in added_index:
-            final_df.loc[i, 'COST'] = 0
+        added_index = list(set(added_index) & set(final_df.index))
+        final_df = final_df.drop(added_index, axis=1).drop(added_index, axis=0)
 
         for i in added_index:
-            costs += df['COST'][i]
+            costs += county_data['COST'][i]
             print("cost", costs)
 
     return final_df, costs
+
+
+def add_constraint(df, limit, header, larger_than):
+    if larger_than:
+        dropped = df[df[header] < limit].index
+    else:
+        dropped = df[df[header] > limit].index
+    return df.drop(dropped, axis=1).drop(dropped, axis=0)
