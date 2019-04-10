@@ -5,7 +5,7 @@ import numpy as np
 # Create your views here.
 
 # Cache the processed data
-# first_df = None
+first_df = None
 # second_df = None
 provider_info = None
 enrollment_info = None
@@ -43,6 +43,28 @@ def home(request):
 
 
 def reset(request):
+    global provider_info
+    global enrollment_info
+    global feature_df
+    global county_provider_data
+    global first_result
+    global second_result
+    global first_cost
+    global second_cost
+    global first_avg_score
+    global first_df
+
+    provider_info = None
+    enrollment_info = None
+    feature_df = None
+    county_provider_data = None
+    first_result = True
+    second_result = True
+    first_df = None
+    first_cost = 0
+    first_avg_score = 0
+    second_cost = 0
+
     return home(request)
 
 
