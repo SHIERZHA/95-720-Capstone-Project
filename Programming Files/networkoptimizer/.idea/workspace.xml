@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7346a383-ef95-49eb-bd73-b7afad4907aa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/networkoptimizer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimizer/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimizer/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimizer/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="7346a383-ef95-49eb-bd73-b7afad4907aa" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +15,7 @@
     <session id="-870268504">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.opened" value="2" />
@@ -66,7 +59,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-653">
+            <state relative-caret-position="-571">
               <caret line="188" column="113" selection-start-line="188" selection-start-column="113" selection-end-line="188" selection-end-column="113" />
             </state>
           </provider>
@@ -254,7 +247,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.39808482" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.39808482" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -362,7 +355,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/optimizer/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-653">
+        <state relative-caret-position="-571">
           <caret line="188" column="113" selection-start-line="188" selection-start-column="113" selection-end-line="188" selection-end-column="113" />
         </state>
       </provider>
