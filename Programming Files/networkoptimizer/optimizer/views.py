@@ -149,7 +149,7 @@ def optimize(request):
 
         # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
 
-    model_df, costs = change_providers(feature_df, county_provider_data, to_delete, to_add)
+    model_df, costs, hold_capacity = change_providers(feature_df, county_provider_data, to_delete, to_add)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
     # Build constraint matrix
@@ -170,7 +170,7 @@ def optimize(request):
     added_index = county_provider_data[county_provider_data['PROVNUM'].isin(to_add)].index
     added_provider_beds = county_provider_data['BEDCERT'][added_index].sum()
     enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'][0] - added_provider_beds
-    B.append((enrollment * cm * ui * turnover / 365))
+    B.append((enrollment * cm * ui * turnover / 365) - hold_capacity)
 
     # Neighbor upper bound
     for i in range(sample_size):
@@ -232,6 +232,7 @@ def optimize(request):
 
 def change_providers(df, county_data, to_delete, to_add):
     costs = 0
+    hold_capacity = 0
     final_df = df.copy()
     #     Deal with to_delete first
     if to_delete:
@@ -245,9 +246,10 @@ def change_providers(df, county_data, to_delete, to_add):
 
         for i in added_index:
             costs += county_data['COST'][i]
+            hold_capacity += county_data['BEDCERT'][i]
             print("cost", costs)
 
-    return final_df, costs
+    return final_df, costs, hold_capacity
 
 
 def add_constraint(df, limit, header, larger_than):
