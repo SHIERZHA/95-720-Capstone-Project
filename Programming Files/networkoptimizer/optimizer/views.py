@@ -9,12 +9,7 @@ first_df = None
 # second_df = None
 provider_info = None
 enrollment_info = None
-# contract_info = None
-# enrolment_info = None
-# provider_data = None
-# contract_info_col_need = None
-# contract_info_col_needed = None
-# enrolment_info_col_needed = None
+
 feature_df = None
 county_provider_data = None
 first_result = True
@@ -24,7 +19,10 @@ first_avg_score = 0
 second_cost = 0
 
 
-# enrollment = 0
+cm_init = 0
+ui_init = 0
+turnover_init = 0
+min_rating_init = 0
 
 
 def home(request):
@@ -69,6 +67,10 @@ def reset(request):
 
 
 def optimize(request):
+    global cm_init
+    global ui_init
+    global turnover_init
+    global min_rating_init
     county = request.GET['county']
     cm = float(request.GET['cm'])
     ui = float(request.GET['ui'])
@@ -94,6 +96,10 @@ def optimize(request):
     second_avg_score = 0
     first = False
     if feature_df is None:
+        cm_init = cm
+        ui_init = ui
+        turnover_init = turnover
+        min_rating_init = min_rating
         first = True
         # build the feature matrix
         filename = county + '.csv'
@@ -225,8 +231,8 @@ def optimize(request):
     return render(request, 'index.html',
                   context={"first_df": first_df, "second_df": second_df, "first_avg_score": first_avg_score,
                            "second_avg_score": second_avg_score, "first_cost": first_cost, "second_cost": second_cost,
-                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm,
-                           'ui': ui, 'turnover': turnover, 'min_rating': min_rating, 'to_add': to_add_orig,
+                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
+                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
                            'to_delete': to_delete_orig})
 
 
