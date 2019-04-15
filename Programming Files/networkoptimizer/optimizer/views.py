@@ -29,21 +29,6 @@ def home(request):
     global provider_info
     global enrollment_info
     global feature_df
-    global first_result
-    global second_result
-
-    feature_df = None
-    # read file - takes a few seconds. Patience is appreciated
-    if provider_info is None:
-        provider_info = pd.read_csv('optimizer/static/dataset/provider_data.csv')
-        enrollment_info = pd.read_csv('optimizer/static/dataset/enrollment_by_county.csv')
-    return render(request, 'index.html', context={"first_result": first_result, "second_result": second_result})
-
-
-def reset(request):
-    global provider_info
-    global enrollment_info
-    global feature_df
     global county_provider_data
     global first_result
     global second_result
@@ -62,6 +47,16 @@ def reset(request):
     first_cost = 0
     first_avg_score = 0
     second_cost = 0
+
+    feature_df = None
+    # read file - takes a few seconds. Patience is appreciated
+    if provider_info is None:
+        provider_info = pd.read_csv('optimizer/static/dataset/provider_data.csv')
+        enrollment_info = pd.read_csv('optimizer/static/dataset/enrollment_by_county.csv')
+    return render(request, 'index.html', context={"first_result": first_result, "second_result": second_result})
+
+
+def reset(request):
 
     return home(request)
 
