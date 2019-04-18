@@ -19,11 +19,13 @@ first_cost = 0
 first_avg_score = 0
 second_cost = 0
 
-
 cm_init = 0
 ui_init = 0
 turnover_init = 0
 min_rating_init = 0
+
+blacklistStr = ''
+whitelistStr = ''
 
 
 def home(request):
@@ -92,63 +94,11 @@ def re_optimize(request):
     global county_provider_data
 
     if county != county_name:
-        cm_init = cm
-        ui_init = ui
-        turnover_init = turnover
-        min_rating_init = min_rating
-        # build the feature matrix
-        filename = county + '.csv'
-        distance_info = pd.read_csv('optimizer/static/distance/' + filename, encoding='ISO-8859-1')
-
-        distance_info['origin_id'] = distance_info['origin_id'].astype('str')
-        distance_info['destination_id'] = distance_info['destination_id'].astype('str')
-
-        county_provider_data = provider_info[
-            (provider_info['STATE'] == 'PA') & (provider_info['COUNTY_NAME'] == county)]
-
-        county_provider_data = county_provider_data.reset_index(drop=True)
-        county_provider_data = county_provider_data.rename(columns={'Total SNF Medicare Payment Amount': 'COST'})
-
-        distance_matrix = []
-        for i in range(len(county_provider_data)):
-            distance_arr = []
-            original_id = str(county_provider_data.iloc[i, 0])
-            # print("original", original_id)
-            for j in range(len(county_provider_data)):
-                if i == j:
-                    distance_arr.append(0.0)
-                    continue
-                destination_id = str(county_provider_data.iloc[j, 0])
-                distance_df = distance_info[((distance_info['origin_id'] == original_id) &
-                                             (distance_info['destination_id'] == destination_id)) |
-                                            ((distance_info['origin_id'] == destination_id) &
-                                             (distance_info['destination_id'] == original_id))]
-                # print(distance_df)
-                if distance_df.reset_index()['DISTANCE'][0] > 20:
-                    distance_arr.append(0.0)
-                else:
-                    distance_arr.append(1.0)
-            # print(distance_arr)
-            distance_arr.append(original_id)
-            distance_matrix.append(distance_arr)
-
-        distance_matrix = np.array(distance_matrix)
-        # distance_matrix.shape
-        distance_df = pd.DataFrame(distance_matrix)
-        distance_df.rename(columns={distance_df.columns[len(distance_df)]: "PROVNUM"}, inplace=True)
-        county_provider_data['PROVNUM'] = county_provider_data['PROVNUM'].astype('str')
-        all_feature_df = pd.merge(county_provider_data, distance_df, on=['PROVNUM'])
-
-        distance_index = list(range(15, 15 + len(county_provider_data)))
-        index = [2, 5, 9, 12, 13, 14]
-        index = index + distance_index
-        # print(index)
-        # all_feature_df[list(range(1,60))] = all_feature_df[list(range(1,60))].astype('float')
-        feature_df = all_feature_df.iloc[:, index]
-
-        # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
+        optimize(request)
 
     model_df, costs, hold_capacity = change_providers(feature_df, county_provider_data, to_delete, to_add)
+    black, white = read_list_from_form()
+    model_df, costs, hold_capacity = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
     model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity,
@@ -169,8 +119,10 @@ def re_optimize(request):
     return render(request, 'second_model.html',
                   context={"first_df": first_df, "second_df": second_df, "first_avg_score": first_avg_score,
                            "second_avg_score": second_avg_score, "first_cost": first_cost, "second_cost": second_cost,
-                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
-                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
+                           "first_result": first_result, "second_result": second_result, 'county': county,
+                           'cm': cm_init,
+                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
+                           'to_add': to_add_orig,
                            'to_delete': to_delete_orig})
 
 
@@ -303,6 +255,8 @@ def optimize(request):
     # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
 
     model_df, costs, hold_capacity = change_providers(feature_df, county_provider_data, to_delete, to_add)
+    black, white = read_list_from_form()
+    model_df, costs, hold_capacity = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
     model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity,
@@ -328,8 +282,10 @@ def optimize(request):
     return render(request, 'second_model.html',
                   context={"first_df": first_df, "second_df": None, "first_avg_score": first_avg_score,
                            "second_avg_score": 0, "first_cost": first_cost, "second_cost": second_cost,
-                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
-                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
+                           "first_result": first_result, "second_result": second_result, 'county': county,
+                           'cm': cm_init,
+                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
+                           'to_add': to_add_orig,
                            'to_delete': to_delete_orig})
 
 
@@ -361,3 +317,33 @@ def add_constraint(df, limit, header, larger_than):
     else:
         dropped = df[df[header] > limit].index
     return df.drop(dropped, axis=1).drop(dropped, axis=0)
+
+
+def read_list_from_file(path):
+    global blacklistStr
+    global whitelistStr
+
+    df_list = pd.read_csv(path)
+    df_list = df_list[df_list['COUNTY'] == county_name]
+    blacklist_df = df_list[df_list['FLAG'] == 'B']
+    whitelist_df = df_list[df_list['FLAG'] == 'W']
+    blacklist = blacklist_df['PROVNUM'].values
+    whitelist = whitelist_df['PROVNUM'].values
+    blacklistStr = ','.join(blacklist)
+    whitelistStr = ','.join(whitelist)
+
+    return blacklist, whitelist
+
+
+def read_list_from_form():
+    global blacklistStr
+    global whitelistStr
+
+    return blacklistStr.split(','), whitelistStr.split(',')
+
+
+def select_enrollment(enrollment_info, company):
+    if company == 'highmark':
+        enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'Highmark']
+    elif company == 'upmc':
+        enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'UPMC']
