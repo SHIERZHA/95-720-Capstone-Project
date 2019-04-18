@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/optimizer/templates/theme.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.modal').modal('show');
+        });
+    </script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Provider Network Optimizer</a>
+</nav>
+
+<div class="container mt-5">
+    {% if not first_result %}
+        First optimizaion failed. The network can't satisfy all constraints.
+    {% endif %}
+    {% if not second_result %}
+        Second optimizaion failed. The network can't satisfy all constraints.
+    {% endif %}
+
+    <div class="row">
+        <div class="col">
+            <form id="optimize_form" action="{% url 're_optimize' %}" method="get">
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Capacity Multiplier</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="cm">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Utilization Index</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="ui">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Turnover Number</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="turnover">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Minimum Rating</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="min_rating">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">County</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="county">
+                    </div>
+                </div>
+                <input type="hidden" class="form-control" name="to_add" value="">
+                <input type="hidden" class="form-control" name="to_delete" value="">
+                <button type="submit" class="btn btn-primary" style="width:8em;height:2.5em">Re-optimize</button>
+            </form>
+            <button onclick="window.location.href='/reset'" class="btn btn-primary mt-1" style="width:8em;height:2.5em">Reset</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-lg-6">
+            <p class="h2">First Optimization</p>
+            <table class="table table-striped" style="font-size: 11px;">
+                <thead class="thead-dark" style="font-size: 14px;">
+                <tr>
+                    <th scope="col">Provider ID</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Certificated Beds</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Quality</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for j in first_df.itertuples %}
+                    <tr>
+                        <th>{{ j.PROVNUM }}</th>
+                        <th>{{ j.PROVNAME }}</th>
+                        <th>{{ j.BEDCERT }}</th>
+                        <th>{{ j.COST }}</th>
+                        <th>{{ j.OVERALL_RATING }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Overall Cost: {{ first_cost }}</li>
+                <li class="list-group-item list-group-item-info">Overall Score: {{ first_avg_score }}</li>
+            </ul>
+        </div>
+
+        <div class="col col-lg-6">
+            <p class="h2">Second Optimization</p>
+            <table class="table table-striped" style="font-size: 11px;">
+                <thead class="thead-dark" style="font-size: 14px;">
+                <tr>
+                    <th scope="col">Provider ID</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Certificated Beds</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Quality</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for j in second_df.itertuples %}
+                    <tr>
+                        <th>{{ j.PROVNUM }}</th>
+                        <th>{{ j.PROVNAME }}</th>
+                        <th>{{ j.BEDCERT }}</th>
+                        <th>{{ j.COST }}</th>
+                        <th>{{ j.OVERALL_RATING }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Overall Cost: {{ second_cost }}</li>
+                <li class="list-group-item list-group-item-info">Overall Score: {{ second_avg_score }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="mr-4">
+                <button type="button" class="btn btn-primary" style="width:8em;height:2.5em" data-toggle="modal" data-target="#addProviderModal">
+                    Add Provider
+                </button>
+                <!-- Add Provider Modal -->
+                <div class="modal fade" id="addProviderModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add with Provider ID</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- device registration form -->
+                            <form id="optimize_form" action="{% url 'optimize' %}" method="get">
+                                <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" name="to_add" value={{ to_add }}>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" class="form-control" name="county" value={{ county }}>
+                                    <input type="hidden" class="form-control" name="cm" value={{ cm }}>
+                                    <input type="hidden" class="form-control" name="ui" value={{ ui }}>
+                                    <input type="hidden" class="form-control" name="turnover" value={{ turnover }}>
+                                    <input type="hidden" class="form-control" name="min_rating" value={{ min_rating }}>
+                                    <input type="hidden" class="form-control" name="to_delete" >
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <button type="button" class="btn btn-primary" style="width:8em;height:2.5em" data-toggle="modal" data-target="#DeleteProviderModal">
+                    Delete Provider
+                </button>
+                <!-- Add Provider Modal -->
+                <div class="modal fade" id="DeleteProviderModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete with Provider ID</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- device registration form -->
+                            <form id="optimize_form" action="{% url 'optimize' %}" method="get">
+                                <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" name="to_delete" value={{ to_delete }}>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" class="form-control" name="county" value={{ county }}>
+                                    <input type="hidden" class="form-control" name="cm" value={{ cm }}>
+                                    <input type="hidden" class="form-control" name="ui" value={{ ui }}>
+                                    <input type="hidden" class="form-control" name="turnover" value={{ turnover }}>
+                                    <input type="hidden" class="form-control" name="min_rating" value={{ min_rating }}>
+                                    <input type="hidden" class="form-control" name="to_add" >
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+
