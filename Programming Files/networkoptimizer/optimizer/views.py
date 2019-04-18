@@ -167,8 +167,8 @@ def re_optimize(request):
     print("second result", second_result)
     county_name = county
     return render(request, 'second_model.html',
-                  context={"first_df": first_df, "second_df": second_df, "first_avg_score": first_avg_score,
-                           "second_avg_score": second_avg_score, "first_cost": first_cost, "second_cost": second_cost,
+                  context={"first_df": first_df, "second_df": second_df, "first_avg_score": round(first_avg_score, 3),
+                           "second_avg_score": round(second_avg_score, 3), "first_cost": round(first_cost, 3), "second_cost": round(second_cost, 3),
                            "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
                            'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
                            'to_delete': to_delete_orig})
@@ -326,8 +326,8 @@ def optimize(request):
     print("second result", second_result)
     county_name = county
     return render(request, 'second_model.html',
-                  context={"first_df": first_df, "second_df": None, "first_avg_score": first_avg_score,
-                           "second_avg_score": 0, "first_cost": first_cost, "second_cost": second_cost,
+                  context={"first_df": first_df, "second_df": None, "first_avg_score": round(first_avg_score, 3),
+                           "second_avg_score": 0.000, "first_cost": round(first_cost, 3), "second_cost": round(second_cost, 3),
                            "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
                            'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
                            'to_delete': to_delete_orig})
