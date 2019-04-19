@@ -97,6 +97,11 @@ def re_optimize(request):
     global county_provider_data
     global enrollment_number
 
+    cm_init = cm
+    ui_init = ui
+    turnover_init = turnover
+    min_rating_init = min_rating
+
     if county != county_name:
         optimize(request)
 
