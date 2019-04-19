@@ -338,7 +338,6 @@ def change_providers(df, county_data, to_delete, to_add):
     final_df = df.copy()
     #     Deal with to_delete first
     if to_delete is not None and len(to_delete) > 0:
-        print(county_data[county_data['PROVNUM'].isin(['395617'])].index)
         deleted_index = county_data[county_data['PROVNUM'].isin(to_delete)].index
         print(deleted_index)
         for i in deleted_index:
@@ -356,7 +355,7 @@ def change_providers(df, county_data, to_delete, to_add):
             costs += county_data['COST'][i]
             hold_capacity += county_data['BEDCERT'][i]
             print("cost", costs)
-    print('df.index', final_df.index)
+    # print('df.index', final_df.index)
     return final_df, costs, hold_capacity
 
 
