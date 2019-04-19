@@ -71,13 +71,13 @@ def re_optimize(request):
     global turnover_init
     global min_rating_init
     global county_name
-    county = request.GET['county']
-    cm = float(request.GET['cm'])
-    ui = float(request.GET['ui'])
-    turnover = float(request.GET['turnover'])
-    min_rating = int(request.GET['min_rating'])
-    to_delete = request.GET['to_delete']
-    to_add = request.GET['to_add']
+    county = request.POST['county']
+    cm = float(request.POST['cm'])
+    ui = float(request.POST['ui'])
+    turnover = float(request.POST['turnover'])
+    min_rating = int(request.POST['min_rating'])
+    to_delete = request.POST['to_delete']
+    to_add = request.POST['to_add']
     to_delete_orig = to_delete
     to_add_orig = to_add
     to_delete = to_delete.replace(' ', '').split(';')
@@ -118,10 +118,15 @@ def re_optimize(request):
     county_name = county
     return render(request, 'second_model.html',
                   context={"first_df": first_df, "second_df": second_df, "first_avg_score": round(first_avg_score, 3),
-                           "second_avg_score": round(second_avg_score, 3), "first_cost": round(first_cost, 3), "second_cost": round(second_cost, 3),
-                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
-                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
-                           'to_delete': to_delete_orig})
+                           "second_avg_score": round(second_avg_score, 3), "first_cost": round(first_cost, 3),
+                           "second_cost": round(second_cost, 3),
+                           "first_result": first_result, "second_result": second_result, 'county': county,
+                           'cm': cm_init,
+                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
+                           'to_add': to_add_orig,
+                           'to_delete': to_delete_orig,
+                           'blacklistStr': blacklistStr,
+                           'whitelistStr': whitelistStr})
 
 
 def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_add, turnover, ui):
@@ -141,8 +146,7 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     # Bed number upper bound
     added_index = county_provider_data[county_provider_data['PROVNUM'].isin(to_add)].index
     added_provider_beds = county_provider_data['BEDCERT'][added_index].sum()
-    enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'][
-                     0] - added_provider_beds
+    enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'].sum() - added_provider_beds
     B.append((enrollment * cm * ui * turnover / 365) - hold_capacity)
     # Neighbor upper bound
     for i in range(sample_size):
@@ -172,13 +176,13 @@ def optimize(request):
     global turnover_init
     global min_rating_init
     global county_name
-    county = request.GET['county']
-    cm = float(request.GET['cm'])
-    ui = float(request.GET['ui'])
-    turnover = float(request.GET['turnover'])
-    min_rating = int(request.GET['min_rating'])
-    to_delete = request.GET['to_delete']
-    to_add = request.GET['to_add']
+    county = request.POST['county']
+    cm = float(request.POST['cm'])
+    ui = float(request.POST['ui'])
+    turnover = float(request.POST['turnover'])
+    min_rating = int(request.POST['min_rating'])
+    to_delete = request.POST['to_delete']
+    to_add = request.POST['to_add']
     to_delete_orig = to_delete
     to_add_orig = to_add
     to_delete = to_delete.replace(' ', '').split(';')
@@ -198,6 +202,18 @@ def optimize(request):
     ui_init = ui
     turnover_init = turnover
     min_rating_init = min_rating
+
+    global blacklistStr
+    global whitelistStr
+
+    blacklistStr = request.POST['blacklistStr']
+    whitelistStr = request.POST['whitelistStr']
+    black = []
+    white = []
+
+    if blacklistStr is None and whitelistStr is None:
+        black, white = read_list_from_file(request.FILES['file'])
+
     # build the feature matrix
     filename = county + '.csv'
     distance_info = pd.read_csv('optimizer/static/distance/' + filename, encoding='ISO-8859-1')
@@ -253,7 +269,7 @@ def optimize(request):
     # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
 
     model_df, costs, hold_capacity = change_providers(feature_df, county_provider_data, to_delete, to_add)
-    black, white = read_list_from_form()
+
     model_df, costs, hold_capacity = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
@@ -279,10 +295,15 @@ def optimize(request):
     county_name = county
     return render(request, 'second_model.html',
                   context={"first_df": first_df, "second_df": None, "first_avg_score": round(first_avg_score, 3),
-                           "second_avg_score": 0.000, "first_cost": round(first_cost, 3), "second_cost": round(second_cost, 3),
-                           "first_result": first_result, "second_result": second_result, 'county': county, 'cm': cm_init,
-                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init, 'to_add': to_add_orig,
-                           'to_delete': to_delete_orig})
+                           "second_avg_score": 0.000, "first_cost": round(first_cost, 3),
+                           "second_cost": round(second_cost, 3),
+                           "first_result": first_result, "second_result": second_result, 'county': county,
+                           'cm': cm_init,
+                           'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
+                           'to_add': to_add_orig,
+                           'to_delete': to_delete_orig,
+                           'blacklistStr': blacklistStr,
+                           'whitelistStr': whitelistStr})
 
 
 def change_providers(df, county_data, to_delete, to_add):
@@ -316,6 +337,9 @@ def add_constraint(df, limit, header, larger_than):
 
 
 def read_list_from_file(path):
+    if path is None:
+        return [], []
+
     global blacklistStr
     global whitelistStr
 
@@ -338,7 +362,9 @@ def read_list_from_form():
     return blacklistStr.split(','), whitelistStr.split(',')
 
 
-def select_enrollment(enrollment_info, company):
+def select_enrollment(company):
+    global enrollment_info
+
     if company == 'highmark':
         enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'Highmark']
     elif company == 'upmc':
