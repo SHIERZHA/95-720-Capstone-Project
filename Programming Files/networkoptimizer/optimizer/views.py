@@ -26,6 +26,7 @@ min_rating_init = 0
 
 blacklistStr = ''
 whitelistStr = ''
+enrollment_number = 0
 
 
 def home(request):
@@ -51,6 +52,7 @@ def reset(request):
     global second_cost
     global first_avg_score
     global first_df
+    global enrollment_number
 
     provider_info = None
     enrollment_info = None
@@ -62,6 +64,7 @@ def reset(request):
     first_cost = 0
     first_avg_score = 0
     second_cost = 0
+    enrollment_number = 0
     return home(request)
 
 
@@ -92,6 +95,7 @@ def re_optimize(request):
     global first_avg_score
     global second_cost
     global county_provider_data
+    global enrollment_number
 
     if county != county_name:
         optimize(request)
@@ -126,10 +130,12 @@ def re_optimize(request):
                            'to_add': to_add_orig,
                            'to_delete': to_delete_orig,
                            'blacklistStr': blacklistStr,
-                           'whitelistStr': whitelistStr})
+                           'whitelistStr': whitelistStr,
+                           'enrollment_number': enrollment_number})
 
 
 def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_add, turnover, ui):
+    global enrollment_number
     # Build constraint matrix
     # min_rating = min_rating
     A = []
@@ -146,7 +152,8 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     # Bed number upper bound
     added_index = county_provider_data[county_provider_data['PROVNUM'].isin(to_add)].index
     added_provider_beds = county_provider_data['BEDCERT'][added_index].sum()
-    enrollment = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'].sum() - added_provider_beds
+    enrollment_number = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'].sum()
+    enrollment = enrollment_number - added_provider_beds
     B.append((enrollment * cm * ui * turnover / 365) - hold_capacity)
     # Neighbor upper bound
     for i in range(sample_size):
@@ -248,7 +255,6 @@ def optimize(request):
                 distance_arr.append(0.0)
             else:
                 distance_arr.append(1.0)
-        print(distance_arr)
         distance_arr.append(original_id)
         distance_matrix.append(distance_arr)
 
@@ -303,7 +309,8 @@ def optimize(request):
                            'to_add': to_add_orig,
                            'to_delete': to_delete_orig,
                            'blacklistStr': blacklistStr,
-                           'whitelistStr': whitelistStr})
+                           'whitelistStr': whitelistStr,
+                           'enrollment_number': enrollment_number})
 
 
 def change_providers(df, county_data, to_delete, to_add):

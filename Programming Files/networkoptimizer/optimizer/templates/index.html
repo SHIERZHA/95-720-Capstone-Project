@@ -38,7 +38,7 @@
 
     <div class="row">
         <div class="col">
-            <form id="optimize_form" action="{% url 'optimize' %}" method="post">
+            <form id="optimize_form" action="{% url 're_optimize' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Company</label>
@@ -181,7 +181,7 @@
                                 </button>
                             </div>
                             <!-- device registration form -->
-                            <form id="optimize_form" action="{% url 'optimize' %}" method="get">
+                            <form id="optimize_form" action="{% url 're_optimize' %}" method="post">
                                 <div class="modal-body">
                                     <div class="form-group row">
                                         <label for="inputPassword" class="col-sm-2 col-form-label">ID</label>
