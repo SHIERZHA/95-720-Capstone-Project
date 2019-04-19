@@ -79,7 +79,7 @@
                     <div class="col-sm-9">
                         <select class="form-control" name="county" form="optimize_form">
                             <option value="Adams">Adams</option>
-                            <option value="Allegheny">Allegheny</option>
+                            <option selected="selected" value="Allegheny">Allegheny</option>
                             <option value="Armstrong">Armstrong</option>
                             <option value="Beaver">Beaver</option>
                             <option value="Bedford">Bedford</option>
@@ -194,6 +194,7 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-primary">Overall Cost: {{ first_cost }}</li>
                 <li class="list-group-item list-group-item-info">Overall Score: {{ first_avg_score }}</li>
+                <li class="list-group-item list-group-item-primary">Enrollment Number: {{ enrollment_number }}</li>
             </ul>
         </div>
 
@@ -224,6 +225,7 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-primary">Overall Cost: {{ second_cost }}</li>
                 <li class="list-group-item list-group-item-info">Overall Score: {{ second_avg_score }}</li>
+                <li class="list-group-item list-group-item-primary">Enrollment Number: {{ enrollment_number }}</li>
             </ul>
         </div>
     </div>
