@@ -177,10 +177,14 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     # print(total_cost.value + costs)
     print('enrollment', enrollment)
     print('capacity constraints', enrollment * cm * ui * turnover / 365)
-    selected_providers_index = np.concatenate((model_df[selection.value == 1].index, added_index), axis=None)
-    print('original', model_df[selection.value == 1])
-    print('added',added_index)
+
+    if total_cost.value is None:
+        selected_providers_index = []
+    else:
+        selected_providers_index = np.concatenate((model_df[selection.value == 1].index, added_index), axis=None)
+
     selected_providers = county_provider_data.iloc[selected_providers_index, :]
+    print(selected_providers)
     return model_df, selected_providers, total_cost
 
 
@@ -298,7 +302,7 @@ def optimize(request):
     first_avg_score = first_df['OVERALL_RATING'].mean()
     if total_cost.value is None:
         first_result = False
-        feature_df = None
+        # feature_df = None
     else:
         first_cost = total_cost.value + costs_1 + costs_2
         feature_df = model_df

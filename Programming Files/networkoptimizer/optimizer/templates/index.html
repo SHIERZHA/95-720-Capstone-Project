@@ -29,12 +29,6 @@
 </nav>
 
 <div class="container mt-5">
-    {% if not first_result %}
-        First optimizaion failed. The network can't satisfy all constraints.
-    {% endif %}
-    {% if not second_result %}
-        Second optimizaion failed. The network can't satisfy all constraints.
-    {% endif %}
 
     <div class="row">
         <div class="col">
@@ -165,6 +159,13 @@
             </button>
         </div>
     </div>
+
+{% if not first_result %}
+        First optimizaion failed. The network can't satisfy all constraints.
+    {% endif %}
+    {% if not second_result %}
+        Second optimizaion failed. The network can't satisfy all constraints.
+    {% endif %}
 
     <div class="row">
         <div class="col col-lg-6">
