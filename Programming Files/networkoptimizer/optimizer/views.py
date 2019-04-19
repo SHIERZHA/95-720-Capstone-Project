@@ -178,6 +178,8 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     print('enrollment', enrollment)
     print('capacity constraints', enrollment * cm * ui * turnover / 365)
     selected_providers_index = np.concatenate((model_df[selection.value == 1].index, added_index), axis=None)
+    print('original', model_df[selection.value == 1])
+    print('added',added_index)
     selected_providers = county_provider_data.iloc[selected_providers_index, :]
     return model_df, selected_providers, total_cost
 
@@ -224,7 +226,7 @@ def optimize(request):
     black = []
     white = []
 
-    if blacklistStr == '' and whitelistStr == '':
+    if blacklistStr == '' and whitelistStr == '' and request.FILES:
         black, white = read_list_from_file(request.FILES['bwlist'], county)
 
     select_enrollment(company)
@@ -327,10 +329,12 @@ def change_providers(df, county_data, to_delete, to_add):
     final_df = df.copy()
     #     Deal with to_delete first
     if to_delete is not None and len(to_delete) > 0:
+        print(county_data[county_data['PROVNUM'].isin(['395617'])].index)
         deleted_index = county_data[county_data['PROVNUM'].isin(to_delete)].index
+        print(deleted_index)
         for i in deleted_index:
             if i in final_df.index:
-                final_df = df.drop(i, axis=1).drop(i, axis=0)
+                final_df = final_df.drop(i, axis=1).drop(i, axis=0)
 
     if to_add is not None and len(to_add) > 0:
         added_index = county_data[county_data['PROVNUM'].isin(to_add)].index
@@ -343,7 +347,7 @@ def change_providers(df, county_data, to_delete, to_add):
             costs += county_data['COST'][i]
             hold_capacity += county_data['BEDCERT'][i]
             print("cost", costs)
-
+    print('df.index', final_df.index)
     return final_df, costs, hold_capacity
 
 
@@ -356,7 +360,6 @@ def add_constraint(df, limit, header, larger_than):
 
 
 def read_list_from_file(path, county):
-    print(path)
     if path is None:
         return [], []
 
@@ -371,8 +374,7 @@ def read_list_from_file(path, county):
     whitelist = whitelist_df['PROVNUM'].values.astype('str')
     blacklistStr = ','.join(blacklist)
     whitelistStr = ','.join(whitelist)
-    print(blacklistStr)
-    print(whitelistStr)
+
     return blacklist, whitelist
 
 

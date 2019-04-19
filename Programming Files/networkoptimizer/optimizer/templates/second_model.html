@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Network Optimization</title>
     <link rel="stylesheet" type="text/css" href="/optimizer/templates/theme.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -78,8 +78,9 @@
                     <label class="col-sm-3 col-form-label">County</label>
                     <div class="col-sm-9">
                         <select class="form-control" name="county" form="optimize_form">
+                            <option selected="selected" value="{{ county }}">{{ county }}</option>
                             <option value="Adams">Adams</option>
-                            <option selected="selected" value="Allegheny">Allegheny</option>
+                            <option value="Allegheny">Allegheny</option>
                             <option value="Armstrong">Armstrong</option>
                             <option value="Beaver">Beaver</option>
                             <option value="Bedford">Bedford</option>
