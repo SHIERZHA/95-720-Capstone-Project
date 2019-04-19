@@ -156,9 +156,9 @@
                 </div>
                 <input type="hidden" class="form-control" name="to_add" value="">
                 <input type="hidden" class="form-control" name="to_delete" value="">
-                <input type="hidden" class="form-control" name="blacklistStr" value="">
-                <input type="hidden" class="form-control" name="whitelistStr" value="">
-                <button type="submit" class="btn btn-primary" style="width:8em;height:2.5em">Optimize</button>
+                <input type="hidden" class="form-control" name="blacklistStr" value={{ blacklistStr }}>
+                <input type="hidden" class="form-control" name="whitelistStr" value={{ whitelistStr }}>
+                <button type="submit" class="btn btn-primary" style="width:8em;height:2.5em">Re-optimize</button>
             </form>
             <button onclick="window.location.href='/reset'" class="btn btn-primary mt-1" style="width:8em;height:2.5em">Reset</button>
         </div>

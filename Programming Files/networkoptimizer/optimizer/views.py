@@ -100,19 +100,19 @@ def re_optimize(request):
     if county != county_name:
         optimize(request)
 
-    model_df, costs, hold_capacity = change_providers(feature_df, county_provider_data, to_delete, to_add)
+    model_df, costs_1, hold_capacity_1 = change_providers(feature_df, county_provider_data, to_delete, to_add)
     black, white = read_list_from_form()
-    model_df, costs, hold_capacity = change_providers(model_df, county_provider_data, black, white)
+    model_df, costs_2, hold_capacity_2 = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
-    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity,
-                                                             model_df, to_add, turnover, ui)
+    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity_1 + hold_capacity_2,
+                                                             model_df, to_add, white, turnover, ui)
     second_df = selected_providers
     second_avg_score = second_df['OVERALL_RATING'].mean()
     if total_cost.value is None:
         second_result = False
     else:
-        second_cost = total_cost.value + costs
+        second_cost = total_cost.value + costs_1 + costs_2
     print("first score", first_avg_score)
     print("second score", second_avg_score)
     print("first cost", first_cost)
@@ -134,7 +134,7 @@ def re_optimize(request):
                            'enrollment_number': enrollment_number})
 
 
-def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_add, turnover, ui):
+def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_add, white, turnover, ui):
     global enrollment_number
     # Build constraint matrix
     # min_rating = min_rating
@@ -150,7 +150,12 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     #  Build the upper bound (right side) of the inequality
     B = []
     # Bed number upper bound
-    added_index = county_provider_data[county_provider_data['PROVNUM'].isin(to_add)].index
+    all_to_add = []
+    for i in to_add:
+        all_to_add.append(i)
+    for i in white:
+        all_to_add.append(i)
+    added_index = county_provider_data[county_provider_data['PROVNUM'].isin(all_to_add)].index
     added_provider_beds = county_provider_data['BEDCERT'][added_index].sum()
     enrollment_number = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'].sum()
     enrollment = enrollment_number - added_provider_beds
@@ -194,6 +199,7 @@ def optimize(request):
     to_add_orig = to_add
     to_delete = to_delete.replace(' ', '').split(';')
     to_add = to_add.replace(' ', '').split(';')
+    company = request.POST['company']
 
     global feature_df
     global first_df
@@ -218,8 +224,10 @@ def optimize(request):
     black = []
     white = []
 
-    if blacklistStr is None and whitelistStr is None:
-        black, white = read_list_from_file(request.FILES['file'])
+    if blacklistStr == '' and whitelistStr == '':
+        black, white = read_list_from_file(request.FILES['bwlist'], county)
+
+    select_enrollment(company)
 
     # build the feature matrix
     filename = county + '.csv'
@@ -274,13 +282,13 @@ def optimize(request):
 
     # all_feature_df[list(range(1, 60))] = all_feature_df[list(range(1, 60))].astype('float')
 
-    model_df, costs, hold_capacity = change_providers(feature_df, county_provider_data, to_delete, to_add)
+    model_df, costs_1, hold_capacity_1 = change_providers(feature_df, county_provider_data, to_delete, to_add)
 
-    model_df, costs, hold_capacity = change_providers(model_df, county_provider_data, black, white)
+    model_df, costs_2, hold_capacity_2 = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
-    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity,
-                                                             model_df, to_add, turnover, ui)
+    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity_1 + hold_capacity_2,
+                                                             model_df, to_add, white, turnover, ui)
 
     # cache to global variable
 
@@ -290,7 +298,7 @@ def optimize(request):
         first_result = False
         feature_df = None
     else:
-        first_cost = total_cost.value + costs
+        first_cost = total_cost.value + costs_1 + costs_2
         feature_df = model_df
     print("first score", first_avg_score)
     print("second score", 0)
@@ -318,14 +326,18 @@ def change_providers(df, county_data, to_delete, to_add):
     hold_capacity = 0
     final_df = df.copy()
     #     Deal with to_delete first
-    if to_delete:
+    if to_delete is not None and len(to_delete) > 0:
         deleted_index = county_data[county_data['PROVNUM'].isin(to_delete)].index
-        final_df = df.drop(deleted_index, axis=1).drop(deleted_index, axis=0)
+        for i in deleted_index:
+            if i in final_df.index:
+                final_df = df.drop(i, axis=1).drop(i, axis=0)
 
-    if to_add:
+    if to_add is not None and len(to_add) > 0:
         added_index = county_data[county_data['PROVNUM'].isin(to_add)].index
         added_index = list(set(added_index) & set(final_df.index))
-        final_df = final_df.drop(added_index, axis=1).drop(added_index, axis=0)
+        for i in added_index:
+            if i in final_df.index:
+                final_df = final_df.drop(i, axis=1).drop(i, axis=0)
 
         for i in added_index:
             costs += county_data['COST'][i]
@@ -343,7 +355,8 @@ def add_constraint(df, limit, header, larger_than):
     return df.drop(dropped, axis=1).drop(dropped, axis=0)
 
 
-def read_list_from_file(path):
+def read_list_from_file(path, county):
+    print(path)
     if path is None:
         return [], []
 
@@ -351,14 +364,15 @@ def read_list_from_file(path):
     global whitelistStr
 
     df_list = pd.read_csv(path)
-    df_list = df_list[df_list['COUNTY'] == county_name]
+    df_list = df_list[df_list['COUNTY'] == county]
     blacklist_df = df_list[df_list['FLAG'] == 'B']
     whitelist_df = df_list[df_list['FLAG'] == 'W']
-    blacklist = blacklist_df['PROVNUM'].values
-    whitelist = whitelist_df['PROVNUM'].values
+    blacklist = blacklist_df['PROVNUM'].values.astype('str')
+    whitelist = whitelist_df['PROVNUM'].values.astype('str')
     blacklistStr = ','.join(blacklist)
     whitelistStr = ','.join(whitelist)
-
+    print(blacklistStr)
+    print(whitelistStr)
     return blacklist, whitelist
 
 
@@ -376,3 +390,5 @@ def select_enrollment(company):
         enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'Highmark']
     elif company == 'upmc':
         enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'UPMC']
+
+
