@@ -2,31 +2,35 @@ from django.shortcuts import render
 import pandas as pd
 import numpy as np
 
-# Create your views here.
-
 # Cache the processed data
+# The current county
 county_name = ''
+# Cache the result from the last execution
 first_df = None
-# second_df = None
-provider_info = None
-enrollment_info = None
-
-feature_df = None
-county_provider_data = None
 first_result = True
 second_result = True
 first_cost = 0
 first_avg_score = 0
 second_cost = 0
-
+enrollment_number = 0
+# Cache the dataset read from the csv file
+provider_info = None
+enrollment_info = None
+# Cache the intermediate dataframe
+feature_df = None
+county_provider_data = None
+# Cache the initial input parameter
 cm_init = 0
 ui_init = 0
 turnover_init = 0
 min_rating_init = 0
-
+feature_1_init = 0
+feature_2_init = 0
+feature_3_init = 0
+# Cache the black/white list
 blacklistStr = ''
 whitelistStr = ''
-enrollment_number = 0
+
 
 
 def home(request):
@@ -73,12 +77,19 @@ def re_optimize(request):
     global ui_init
     global turnover_init
     global min_rating_init
+    global feature_1_init
+    global feature_2_init
+    global feature_3_init
     global county_name
     county = request.POST['county']
     cm = float(request.POST['cm'])
     ui = float(request.POST['ui'])
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
+    # Change feature_x to the feature you want here
+    feature_1 = float(request.POST['feature_1'])
+    feature_2 = float(request.POST['feature_2'])
+    feature_3 = float(request.POST['feature_3'])
     to_delete = request.POST['to_delete']
     to_add = request.POST['to_add']
     to_delete_orig = to_delete
@@ -101,6 +112,9 @@ def re_optimize(request):
     ui_init = ui
     turnover_init = turnover
     min_rating_init = min_rating
+    feature_1_init = feature_1
+    feature_2_init = feature_2
+    feature_3_init = feature_3
 
     if county != county_name:
         optimize(request)
@@ -110,7 +124,12 @@ def re_optimize(request):
     model_df, costs_2, hold_capacity_2 = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
-    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity_1 + hold_capacity_2,
+    # Make changes here
+    model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
+    model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
+    model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
+    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data,
+                                                             hold_capacity_1 + hold_capacity_2,
                                                              model_df, to_add, white, turnover, ui)
     second_df = selected_providers
     second_avg_score = second_df['OVERALL_RATING'].mean()
@@ -134,6 +153,9 @@ def re_optimize(request):
                            'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
                            'to_add': to_add_orig,
                            'to_delete': to_delete_orig,
+                           # 'feature_1': feature_1_init,
+                           # 'feature_2': feature_2_init,
+                           # 'feature_3': feature_3_init,
                            'blacklistStr': blacklistStr,
                            'whitelistStr': whitelistStr,
                            'enrollment_number': enrollment_number})
@@ -198,12 +220,19 @@ def optimize(request):
     global ui_init
     global turnover_init
     global min_rating_init
+    global feature_1_init
+    global feature_2_init
+    global feature_3_init
     global county_name
     county = request.POST['county']
     cm = float(request.POST['cm'])
     ui = float(request.POST['ui'])
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
+    # Change feature_x to the feature you want here
+    feature_1 = float(request.POST['feature_1'])
+    feature_2 = float(request.POST['feature_2'])
+    feature_3 = float(request.POST['feature_3'])
     to_delete = request.POST['to_delete']
     to_add = request.POST['to_add']
     to_delete_orig = to_delete
@@ -226,6 +255,9 @@ def optimize(request):
     ui_init = ui
     turnover_init = turnover
     min_rating_init = min_rating
+    feature_1_init = feature_1
+    feature_2_init = feature_2
+    feature_3_init = feature_3
 
     global blacklistStr
     global whitelistStr
@@ -298,7 +330,12 @@ def optimize(request):
     model_df, costs_2, hold_capacity_2 = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
-    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data, hold_capacity_1 + hold_capacity_2,
+    # Make changes here
+    model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
+    model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
+    model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
+    model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data,
+                                                             hold_capacity_1 + hold_capacity_2,
                                                              model_df, to_add, white, turnover, ui)
 
     # cache to global variable
@@ -327,6 +364,9 @@ def optimize(request):
                            'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
                            'to_add': to_add_orig,
                            'to_delete': to_delete_orig,
+                           # 'feature_1': feature_1_init,
+                           # 'feature_2': feature_2_init,
+                           # 'feature_3': feature_3_init,
                            'blacklistStr': blacklistStr,
                            'whitelistStr': whitelistStr,
                            'enrollment_number': enrollment_number})
@@ -400,5 +440,3 @@ def select_enrollment(company):
         enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'Highmark']
     elif company == 'upmc':
         enrollment_info = enrollment_info[enrollment_info['COMPANY'] == 'UPMC']
-
-
