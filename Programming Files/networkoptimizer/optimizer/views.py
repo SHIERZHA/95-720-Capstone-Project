@@ -83,7 +83,7 @@ def re_optimize(request):
     global county_name
     county = request.POST['county']
     cm = float(request.POST['cm'])
-    ui = float(request.POST['ui'])
+    ui = float(request.POST['ui']) / 100
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
     # Change feature_x to the feature you want here
@@ -108,10 +108,10 @@ def re_optimize(request):
     global county_provider_data
     global enrollment_number
 
-    cm_init = cm
-    ui_init = ui
-    turnover_init = turnover
-    min_rating_init = min_rating
+    cm_init = request.POST['cm']
+    ui_init = request.POST['ui']
+    turnover_init = request.POST['turnover']
+    min_rating_init = request.POST['min_rating']
     feature_1_init = feature_1
     feature_2_init = feature_2
     feature_3_init = feature_3
@@ -226,7 +226,7 @@ def optimize(request):
     global county_name
     county = request.POST['county']
     cm = float(request.POST['cm'])
-    ui = float(request.POST['ui'])
+    ui = float(request.POST['ui']) / 100
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
     # Change feature_x to the feature you want here
@@ -251,10 +251,10 @@ def optimize(request):
     global second_cost
     global county_provider_data
 
-    cm_init = cm
-    ui_init = ui
-    turnover_init = turnover
-    min_rating_init = min_rating
+    cm_init = request.POST['cm']
+    ui_init = request.POST['ui']
+    turnover_init = request.POST['turnover']
+    min_rating_init = request.POST['min_rating']
     feature_1_init = feature_1
     feature_2_init = feature_2
     feature_3_init = feature_3
