@@ -87,9 +87,9 @@ def re_optimize(request):
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
     # Change feature_x to the feature you want here
-    feature_1 = float(request.POST['feature_1'])
-    feature_2 = float(request.POST['feature_2'])
-    feature_3 = float(request.POST['feature_3'])
+    # feature_1 = float(request.POST['feature_1'])
+    # feature_2 = float(request.POST['feature_2'])
+    # feature_3 = float(request.POST['feature_3'])
     to_delete = request.POST['to_delete']
     to_add = request.POST['to_add']
     to_delete_orig = to_delete
@@ -112,9 +112,9 @@ def re_optimize(request):
     ui_init = request.POST['ui']
     turnover_init = request.POST['turnover']
     min_rating_init = request.POST['min_rating']
-    feature_1_init = feature_1
-    feature_2_init = feature_2
-    feature_3_init = feature_3
+    # feature_1_init = feature_1
+    # feature_2_init = feature_2
+    # feature_3_init = feature_3
 
     if county != county_name:
         optimize(request)
@@ -125,9 +125,9 @@ def re_optimize(request):
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
     # Make changes here
-    model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
-    model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
-    model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
+    # model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
+    # model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
+    # model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
     model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data,
                                                              hold_capacity_1 + hold_capacity_2,
                                                              model_df, to_add, white, turnover, ui)
@@ -230,9 +230,9 @@ def optimize(request):
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
     # Change feature_x to the feature you want here
-    feature_1 = float(request.POST['feature_1'])
-    feature_2 = float(request.POST['feature_2'])
-    feature_3 = float(request.POST['feature_3'])
+    # feature_1 = float(request.POST['feature_1'])
+    # feature_2 = float(request.POST['feature_2'])
+    # feature_3 = float(request.POST['feature_3'])
     to_delete = request.POST['to_delete']
     to_add = request.POST['to_add']
     to_delete_orig = to_delete
@@ -255,9 +255,9 @@ def optimize(request):
     ui_init = request.POST['ui']
     turnover_init = request.POST['turnover']
     min_rating_init = request.POST['min_rating']
-    feature_1_init = feature_1
-    feature_2_init = feature_2
-    feature_3_init = feature_3
+    # feature_1_init = feature_1
+    # feature_2_init = feature_2
+    # feature_3_init = feature_3
 
     global blacklistStr
     global whitelistStr
@@ -331,9 +331,9 @@ def optimize(request):
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
     # Make changes here
-    model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
-    model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
-    model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
+    # model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
+    # model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
+    # model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
     model_df, selected_providers, total_cost = execute_model(cm, county, county_provider_data,
                                                              hold_capacity_1 + hold_capacity_2,
                                                              model_df, to_add, white, turnover, ui)
