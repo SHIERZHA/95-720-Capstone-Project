@@ -13,6 +13,9 @@ first_cost = 0
 first_avg_score = 0
 second_cost = 0
 enrollment_number = 0
+first_beds = 0
+second_beds = 0
+
 # Cache the dataset read from the csv file
 provider_info = None
 enrollment_info = None
@@ -32,8 +35,8 @@ blacklistStr = ''
 whitelistStr = ''
 
 
-
 def home(request):
+    clear_all()
     global provider_info
     global feature_df
     global enrollment_info
@@ -46,6 +49,11 @@ def home(request):
 
 
 def reset(request):
+    clear_all()
+    return home(request)
+
+
+def clear_all():
     global provider_info
     global enrollment_info
     global feature_df
@@ -57,6 +65,8 @@ def reset(request):
     global first_avg_score
     global first_df
     global enrollment_number
+    global first_beds
+    global second_beds
 
     provider_info = None
     enrollment_info = None
@@ -69,7 +79,8 @@ def reset(request):
     first_avg_score = 0
     second_cost = 0
     enrollment_number = 0
-    return home(request)
+    first_beds = 0
+    second_beds = 0
 
 
 def re_optimize(request):
@@ -81,6 +92,8 @@ def re_optimize(request):
     global feature_2_init
     global feature_3_init
     global county_name
+    global first_beds
+    global second_beds
     county = request.POST['county']
     cm = float(request.POST['cm'])
     ui = float(request.POST['ui']) / 100
@@ -158,11 +171,16 @@ def re_optimize(request):
                            # 'feature_3': feature_3_init,
                            'blacklistStr': blacklistStr,
                            'whitelistStr': whitelistStr,
-                           'enrollment_number': enrollment_number})
+                           'enrollment_number': enrollment_number,
+                           'first_beds': first_beds,
+                           'second_beds': second_beds
+                           })
 
 
 def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_add, white, turnover, ui):
     global enrollment_number
+    global first_beds
+    global second_beds
     # Build constraint matrix
     # min_rating = min_rating
     A = []
@@ -185,6 +203,10 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     added_index = county_provider_data[county_provider_data['PROVNUM'].isin(all_to_add)].index
     added_provider_beds = county_provider_data['BEDCERT'][added_index].sum()
     enrollment_number = enrollment_info[enrollment_info['COUNTY_NAME'] == county].reset_index()['ENROLLMENT'].sum()
+    if first_beds == 0:
+        first_beds = enrollment_number * cm * ui * turnover / 365
+    else:
+        second_beds = enrollment_number * cm * ui * turnover / 365
     enrollment = enrollment_number - added_provider_beds
     B.append((enrollment * cm * ui * turnover / 365) - hold_capacity)
     # Neighbor upper bound
@@ -224,6 +246,8 @@ def optimize(request):
     global feature_2_init
     global feature_3_init
     global county_name
+    global first_beds
+    global second_beds
     county = request.POST['county']
     cm = float(request.POST['cm'])
     ui = float(request.POST['ui']) / 100
@@ -369,7 +393,10 @@ def optimize(request):
                            # 'feature_3': feature_3_init,
                            'blacklistStr': blacklistStr,
                            'whitelistStr': whitelistStr,
-                           'enrollment_number': enrollment_number})
+                           'enrollment_number': enrollment_number,
+                           'first_beds': first_beds,
+                           'second_beds': second_beds
+                           })
 
 
 def change_providers(df, county_data, to_delete, to_add):
