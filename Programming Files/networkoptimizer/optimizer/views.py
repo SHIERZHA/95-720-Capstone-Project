@@ -172,8 +172,8 @@ def re_optimize(request):
                            'blacklistStr': blacklistStr,
                            'whitelistStr': whitelistStr,
                            'enrollment_number': enrollment_number,
-                           'first_beds': first_beds,
-                           'second_beds': second_beds
+                           'first_beds': int(first_beds),
+                           'second_beds': int(second_beds)
                            })
 
 
@@ -393,8 +393,8 @@ def optimize(request):
                            'blacklistStr': blacklistStr,
                            'whitelistStr': whitelistStr,
                            'enrollment_number': enrollment_number,
-                           'first_beds': first_beds,
-                           'second_beds': second_beds
+                           'first_beds': int(first_beds),
+                           'second_beds': int(second_beds)
                            })
 
 
