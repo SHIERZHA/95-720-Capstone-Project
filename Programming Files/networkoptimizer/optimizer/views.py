@@ -303,8 +303,7 @@ def optimize(request):
     distance_info['origin_id'] = distance_info['origin_id'].astype('str')
     distance_info['destination_id'] = distance_info['destination_id'].astype('str')
 
-    county_provider_data = provider_info[
-        (provider_info['STATE'] == 'PA') & (provider_info['COUNTY_NAME'] == county)]
+    county_provider_data = provider_info[(provider_info['COUNTY_NAME'] == county)]
 
     county_provider_data = county_provider_data.reset_index(drop=True)
     county_provider_data = county_provider_data.rename(columns={'Total SNF Medicare Payment Amount': 'COST'})
