@@ -99,7 +99,7 @@ def re_optimize(request):
     ui = float(request.POST['ui']) / 100
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
-    # Change feature_x to the feature you want here
+    # Uncomment here
     # feature_1 = float(request.POST['feature_1'])
     # feature_2 = float(request.POST['feature_2'])
     # feature_3 = float(request.POST['feature_3'])
@@ -125,6 +125,7 @@ def re_optimize(request):
     ui_init = request.POST['ui']
     turnover_init = request.POST['turnover']
     min_rating_init = request.POST['min_rating']
+    # Uncomment here
     # feature_1_init = feature_1
     # feature_2_init = feature_2
     # feature_3_init = feature_3
@@ -137,7 +138,8 @@ def re_optimize(request):
     model_df, costs_2, hold_capacity_2 = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
-    # Make changes here
+    # Make changes here.
+    # 'FEATURE_X' should be replaced by the column name in the dataset.
     # model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
     # model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
     # model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
@@ -166,6 +168,7 @@ def re_optimize(request):
                            'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
                            'to_add': to_add_orig,
                            'to_delete': to_delete_orig,
+                           # Uncomment here
                            # 'feature_1': feature_1_init,
                            # 'feature_2': feature_2_init,
                            # 'feature_3': feature_3_init,
@@ -182,7 +185,6 @@ def execute_model(cm, county, county_provider_data, hold_capacity, model_df, to_
     global first_beds
     global second_beds
     # Build constraint matrix
-    # min_rating = min_rating
     A = []
     # Bed number constraint
     A.append(model_df['BEDCERT'].values.T)
@@ -253,7 +255,7 @@ def optimize(request):
     ui = float(request.POST['ui']) / 100
     turnover = float(request.POST['turnover'])
     min_rating = int(request.POST['min_rating'])
-    # Change feature_x to the feature you want here
+    # Uncomment here
     # feature_1 = float(request.POST['feature_1'])
     # feature_2 = float(request.POST['feature_2'])
     # feature_3 = float(request.POST['feature_3'])
@@ -279,6 +281,7 @@ def optimize(request):
     ui_init = request.POST['ui']
     turnover_init = request.POST['turnover']
     min_rating_init = request.POST['min_rating']
+    # Uncomment here
     # feature_1_init = feature_1
     # feature_2_init = feature_2
     # feature_3_init = feature_3
@@ -353,7 +356,8 @@ def optimize(request):
     model_df, costs_2, hold_capacity_2 = change_providers(model_df, county_provider_data, black, white)
     # Overall rating constraint
     model_df = add_constraint(model_df, min_rating, 'OVERALL_RATING', True)
-    # Make changes here
+    # Make changes here.
+    # 'FEATURE_X' should be replaced by the column name in the dataset.
     # model_df = add_constraint(model_df, feature_1, 'FEATURE_1', True)
     # model_df = add_constraint(model_df, feature_2, 'FEATURE_2', True)
     # model_df = add_constraint(model_df, feature_3, 'FEATURE_3', True)
@@ -387,6 +391,7 @@ def optimize(request):
                            'ui': ui_init, 'turnover': turnover_init, 'min_rating': min_rating_init,
                            'to_add': to_add_orig,
                            'to_delete': to_delete_orig,
+                           # Uncomment here
                            # 'feature_1': feature_1_init,
                            # 'feature_2': feature_2_init,
                            # 'feature_3': feature_3_init,
