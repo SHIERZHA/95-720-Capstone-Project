@@ -7,18 +7,41 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-            crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
             integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
             crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.modal').modal('show');
+            $("#optimize_form").validate(
+                {
+                    rules:
+                        {
+                            cm:
+                                {
+                                    required: true,
+                                    min: 0
+                                },
+                            ui:
+                                {
+                                    range: [0, 100]
+                                },
+                            turnover:
+                                {
+                                    required: true,
+                                    min: 1
+                                },
+                            min_rating:
+                                {
+                                    required: true,
+                                    range: [1, 5],
+                                    digits: true
+                                }
+                        }
+                });
         });
     </script>
 </head>
@@ -42,47 +65,47 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Capacity Multiplier</label>
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Capacity Multiplier(CM >= 0)</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="cm" value= {{ cm }}>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Utilization Index</label>
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Utilization Index (0 < UI <= 100)</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="ui" value= {{ ui }}>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Turnover Number</label>
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Turnover Number (TN >= 1)</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="turnover" value= {{ turnover }}>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Minimum Rating</label>
+                    <label class="col-sm-3 col-form-label">Minimum Rating (1, 2, 3, 4, 5)</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" name="min_rating" value= {{ min_rating }}>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature1</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="feature_1" value= {{ feature_1 }}>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature2</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="feature_2" value= {{ feature_2 }}>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature3</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="feature_3" value= {{ feature_3 }}>
-                    </div>
-                </div>
+{#                <div class="form-group row">#}
+{#                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature1</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        <input type="text" class="form-control" name="feature_1" value= {{ feature_1 }}>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group row">#}
+{#                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature2</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        <input type="text" class="form-control" name="feature_2" value= {{ feature_2 }}>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group row">#}
+{#                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature3</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        <input type="text" class="form-control" name="feature_3" value= {{ feature_3 }}>#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">County</label>
                     <div class="col-sm-9">
@@ -141,7 +164,7 @@
                 <li class="list-group-item list-group-item-primary">Overall Cost: {{ first_cost }}</li>
                 <li class="list-group-item list-group-item-info">Overall Score: {{ first_avg_score }}</li>
                 <li class="list-group-item list-group-item-primary">Enrollment Number: {{ enrollment_number }}</li>
-                <li class="list-group-item list-group-item-info">Number of Beds: {{ first_beds }}</li>
+                <li class="list-group-item list-group-item-info">Required Number of Beds: {{ first_beds }}</li>
             </ul>
         </div>
 
@@ -173,7 +196,7 @@
                 <li class="list-group-item list-group-item-primary">Overall Cost: {{ second_cost }}</li>
                 <li class="list-group-item list-group-item-info">Overall Score: {{ second_avg_score }}</li>
                 <li class="list-group-item list-group-item-primary">Enrollment Number: {{ enrollment_number }}</li>
-                <li class="list-group-item list-group-item-info">Number of Beds: {{ second_beds }}</li>
+                <li class="list-group-item list-group-item-info">Required Number of Beds: {{ second_beds }}</li>
             </ul>
         </div>
     </div>

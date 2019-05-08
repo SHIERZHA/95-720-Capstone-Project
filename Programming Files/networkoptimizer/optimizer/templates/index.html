@@ -44,6 +44,12 @@
                 });
         });
     </script>
+
+    <style>
+input::placeholder {
+  font-style: italic;
+}
+</style>
 </head>
 <body>
 
@@ -54,7 +60,8 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col">
-            <form id="optimize_form" name="optimize_form" action="{% url 'optimize' %}" method="post" enctype="multipart/form-data">
+            <form id="optimize_form" name="optimize_form" action="{% url 'optimize' %}" method="post"
+                  enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Company</label>
@@ -69,45 +76,48 @@
                 <div class="form-group row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Capacity Multiplier(CM >= 0)</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="cm">
+                        <input type="text" class="form-control" name="cm" placeholder="The multiplier on the number of enrollees">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Utilization Index (0 < UI <= 100)</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="ui">
+                        <input type="text" class="form-control" name="ui" placeholder="The proportion of enrollees expected to utilize the providers at the same time">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Turnover Number (TN >= 1)</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="turnover">
+                        <input type="text" class="form-control" name="turnover" placeholder="The average stay of length in providers">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Minimum Rating (1, 2, 3, 4, 5)</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="min_rating">
+                        <input type="text" class="form-control" name="min_rating" placeholder="Minimum quality rating of the providers">
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature1</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="feature_1">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature2</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="feature_2">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature3</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="feature_3">
-                    </div>
-                </div>
+{#                 Cutomize the parameter by editing the block named "Optional Feature1"#}
+{#                <div class="form-group row">#}
+{#                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature1</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        <input type="text" class="form-control" name="feature_1">#}
+{#                    </div>#}
+{#                </div>#}
+{#                 Cutomize the parameter by editing the block named "Optional Feature2"#}
+{#                <div class="form-group row">#}
+{#                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature2</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        <input type="text" class="form-control" name="feature_2">#}
+{#                    </div>#}
+{#                </div>#}
+{#                 Cutomize the parameter by editing the block named "Optional Feature3"#}
+{#                <div class="form-group row">#}
+{#                    <label for="inputPassword" class="col-sm-3 col-form-label">Optional Feature3</label>#}
+{#                    <div class="col-sm-9">#}
+{#                        <input type="text" class="form-control" name="feature_3">#}
+{#                    </div>#}
+{#                </div>#}
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">County</label>
                     <div class="col-sm-9">
@@ -236,7 +246,7 @@
                 <li class="list-group-item list-group-item-primary">Overall Cost: {{ first_cost }}</li>
                 <li class="list-group-item list-group-item-info">Overall Score: {{ first_avg_score }}</li>
                 <li class="list-group-item list-group-item-primary">Enrollment Number: {{ enrollment_number }}</li>
-                <li class="list-group-item list-group-item-info">Number of Beds: {{ first_beds }}</li>
+                <li class="list-group-item list-group-item-info">Required Number of Beds: {{ first_beds }}</li>
             </ul>
         </div>
 
@@ -268,7 +278,7 @@
                 <li class="list-group-item list-group-item-primary">Overall Cost: {{ second_cost }}</li>
                 <li class="list-group-item list-group-item-info">Overall Score: {{ second_avg_score }}</li>
                 <li class="list-group-item list-group-item-primary">Enrollment Number: {{ enrollment_number }}</li>
-                <li class="list-group-item list-group-item-info">Number of Beds: {{ second_beds }}</li>
+                <li class="list-group-item list-group-item-info">Required Number of Beds: {{ second_beds }}</li>
             </ul>
         </div>
     </div>
