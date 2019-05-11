@@ -5,12 +5,12 @@ This project aims to help Highmark with optimizing the providers network, so tha
 
 ## File Structure:
 -Raw Data Sets<br />
--Programming File<br /> tag
-	- networkoptimizer (Django Application)<br /> tag
-		- optimizer (Optimizer Application)<br /> tag
-		- templates (Frontend Files)<br /> tag
-		- urls.py (RESTful Routing File)<br /> tag
-		- views.py (Backend File)<br /> tag
+-Programming File<br /> 
+	- networkoptimizer (Django Application)<br /> 
+		- optimizer (Optimizer Application)<br /> 
+		- templates (Frontend Files)<br />
+		- urls.py (RESTful Routing File)<br />
+		- views.py (Backend File)<br />
 
 
 ## Getting Started
