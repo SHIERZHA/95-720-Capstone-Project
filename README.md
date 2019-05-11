@@ -4,13 +4,13 @@
 This project aims to help Highmark with optimizing the providers network, so that patients can pay the least cost, while getting a certain level of service. At the same time, other constraints, such as the legal constraints, will also be satisfied.
 
 ## File Structure:
--Raw Data Sets<br />
+Raw Data Sets<br />
 -Programming File<br /> 
->	- networkoptimizer (Django Application)<br /> 
->>		- optimizer (Optimizer Application)<br /> 
->>		- templates (Frontend Files)<br />
->>		- urls.py (RESTful Routing File)<br />
->>		- views.py (Backend File)<br />
+&ensp; 	- networkoptimizer (Django Application)<br /> 
+&ensp; &ensp; 		- optimizer (Optimizer Application)<br /> 
+&ensp; &ensp; - templates (Frontend Files)<br />
+&ensp; &ensp; - urls.py (RESTful Routing File)<br />
+&ensp; &ensp; - views.py (Backend File)<br />
 
 
 ## Getting Started
