@@ -3,8 +3,8 @@
 
 This project aims to help Highmark with optimizing the providers network, so that patients can pay the least cost, while getting a certain level of service. At the same time, other constraints, such as the legal constraints, will also be satisfied.
 
-## File Structure Description:
--Raw Data Sets
+## File Structure:
+-Raw Data Sets\n
 -Programming File
 	- networkoptimizer (Django Application)
 		- optimizer (Optimizer Application)
