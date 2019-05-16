@@ -29,6 +29,12 @@ pandas 0.23.4
 cvxopt 1.2.3
 cvxpy 1.0.21
 ```
+You can also run the command below to install all dependencies.
+
+```
+pip install -r requirements.txt
+```
+
 
 ### Deploy to Local Server
 
