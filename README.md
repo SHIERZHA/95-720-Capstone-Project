@@ -32,7 +32,7 @@ cvxpy 1.0.21
 
 ### Deploy to Local Server
 
-A step by step series of examples that tell you how to get a development environment running.
+A step by step instruction on how to run a server.
 
 1. This system is written in Python 3.7, please make sure you have the same Python version.
 2. Install Django framework, please run the following code in terminal.
