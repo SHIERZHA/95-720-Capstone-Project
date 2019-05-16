@@ -41,20 +41,11 @@ A step by step instruction on how to run a server.
 cd 95-720-Capstone-Project-master
 pip install -r requirements.txt
 ```
-2. Install Django framework, please run the following code in terminal.
-```
-pip install django
-```
-3. Install cvxopt and cvxpy package, please run the following code in terminal.
-```
-pip install cvxopt
-pip install cvxpy
-```
-4. Go to the category of networkoptimizer.
+3. Go to the category of networkoptimizer.
 ```
 cd 95-720-Capstone-Project-master/Programming Files/networkoptimizer
 ```
-5. Run the server.
+4. Run the server.
 ```
 python manage.py runserver
 ```
