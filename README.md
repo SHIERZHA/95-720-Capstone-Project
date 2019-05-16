@@ -19,7 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Things that you need to install the software.
 
 ```
 Python 3.7
@@ -29,19 +29,26 @@ pandas 0.23.4
 cvxopt 1.2.3
 cvxpy 1.0.21
 ```
-You can also run the command below to install all dependencies.
-
-```
-pip install -r requirements.txt
-```
-
 
 ### Deploy to Local Server
 
-A step by step series of examples that tell you how to get a development env running
+A step by step series of examples that tell you how to get a development environment running.
 
-cd to the directory networkoptimizer, which contains manage.py
-
+1. This system is written in Python 3.7, please make sure you have the same Python version.
+2. Install Django framework, please run the following code in terminal.
+```
+pip install django
+```
+3. Install cvxopt and cvxpy package, please run the following code in terminal.
+```
+pip install cvxopt
+pip install cvxpy
+```
+4. Go to the category of networkoptimizer.
+```
+cd 95-720-Capstone-Project-master/Programming Files/networkoptimizer
+```
+5. Run the server.
 ```
 python manage.py runserver
 ```
